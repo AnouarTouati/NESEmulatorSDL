@@ -1,2 +1,2 @@
 # NESEmulatorSDL
-A Nintendo Entertainment System made for educational purposes
+A Nintendo Entertainment System Emulator made for educational purposes
