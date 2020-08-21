@@ -227,7 +227,7 @@ namespace UnitTests
 			}
 			Assert::AreEqual(ActualSumOfRandomNumvers, SumOfRandomNumbersFromMemory);
 		}
-		
+		/*
 		TEST_METHOD(ADC_IME) {
 			//0x69 opcode of ADC_IME 
 			//ADC_IME adds Accumulator + immediate value + carry
@@ -248,7 +248,7 @@ namespace UnitTests
 			Assert::IsFalse(aCPU.GetZero());
 			Assert::IsFalse(aCPU.GetSign());
 		}
-
+		*/
 	};
 
 	TEST_CLASS(AND_INSTRUCTIONS) {
@@ -736,4 +736,13 @@ namespace UnitTests
 			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
 		}
 	};
+
+
+	void PrepToCreateIME_Instruction(uint8_t InstructionOPcode,uint8_t ImmediateValue,CPU* aCPU,uint8_t** OriginalMainMemory) {
+		OriginalMainMemory = CreateMainMemory();
+		aCPU=&CPU(NULL, OriginalMainMemory, NULL);
+
+		*OriginalMainMemory[0x0000] = InstructionOPcode;
+		*OriginalMainMemory[0x0001] = ImmediateValue;
+	}
 }

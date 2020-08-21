@@ -30,32 +30,32 @@
 		std::shared_ptr<spdlog::logger> Logger;
 		bool FinishedExecutingCurrentInsctruction = true;
 
-		uint8_t GetDataFromCPUMemoryUsing_IME_MODE() {
-			return  *CPUMemory[PC + 1];
+		uint8_t* GetPointerToDataInCPUMemoryUsing_IME_MODE() {
+			return  CPUMemory[PC + 1];
 		}
 
-		uint8_t GetDataFromCPUMemoryUsing_ZABS_MODE() {
-			return *CPUMemory[*CPUMemory[PC + 1]];
+		uint8_t* GetPointerToDataInCPUMemoryUsing_ZABS_MODE() {
+			return CPUMemory[*CPUMemory[PC + 1]];
 		}
-		uint8_t GetDataFromCPUMemoryUsing_ZINX_MODE() {
-			return *CPUMemory[*CPUMemory[PC + 1] + X];
+		uint8_t* GetPointerToDataInCPUMemoryUsing_ZINX_MODE() {
+			return CPUMemory[*CPUMemory[PC + 1] + X];
 		}
-		uint8_t GetDataFromCPUMemoryUsing_ABS_MODE() {
-			return *CPUMemory[Get16BitAddressFromMemoryLocation(PC + 1)];
+		uint8_t* GetPointerToDataInCPUMemoryUsing_ABS_MODE() {
+			return CPUMemory[Get16BitAddressFromMemoryLocation(PC + 1)];
 		}
-		uint8_t GetDataFromCPUMemoryUsing_INX_X_MODE() {
-			return *CPUMemory[Get16BitAddressFromMemoryLocation(PC + 1) + X];
+		uint8_t* GetPointerToDataInCPUMemoryUsing_INX_X_MODE() {
+			return CPUMemory[Get16BitAddressFromMemoryLocation(PC + 1) + X];
 		}
-		uint8_t GetDataFromCPUMemoryUsing_INX_Y_MODE() {
-			return *CPUMemory[Get16BitAddressFromMemoryLocation(PC + 1) + Y];
+		uint8_t* GetPointerToDataInCPUMemoryUsing_INX_Y_MODE() {
+			return CPUMemory[Get16BitAddressFromMemoryLocation(PC + 1) + Y];
 		}
-		uint8_t GetDataFromCPUMemoryUsing_PRII_MODE() {
+		uint8_t* GetPointerToDataInCPUMemoryUsing_PRII_MODE() {
 			uint8_t ActualAddress = *CPUMemory[*CPUMemory[PC + 1] + X];
-			return *CPUMemory[ActualAddress];
+			return CPUMemory[ActualAddress];
 		}
-		uint8_t GetDataFromCPUMemoryUsing_POII_MODE() {
+		uint8_t* GetPointerToDataInCPUMemoryUsing_POII_MODE() {
 			uint16_t ActualAddress = Get16BitAddressFromMemoryLocation(*CPUMemory[PC + 1]) + Y;
-			return *CPUMemory[ActualAddress];
+			return CPUMemory[ActualAddress];
 		}
 
 		uint16_t Get16BitAddressFromMemoryLocation(uint16_t StartingAddress) {
@@ -183,11 +183,6 @@
 
 
 
-
-
-
-
-
 		void BaseAND(uint8_t InstructionLength);
 
 
@@ -200,7 +195,7 @@
 		// void   ASL_ZABS();
 		// void   PHP();
 		// void   ORA_IME();
-		// void  ASL_ACC();
+		 void  ASL_ACC();
 		// void  ORA_ABS();
 		// void  ASL_ABS();
 		// void  BPL();

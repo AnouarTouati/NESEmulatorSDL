@@ -27,7 +27,7 @@
 		//
 		//case 0x08:  PHP(); break;
 		//case 0x09:  ORA_IME(); break;
-		//case 0x0A:  ASL_ACC(); break;
+		case 0x0A:  ASL_ACC(); break;
 		//
 		//case 0x0D:  ORA_ABS(); break;
 		//case 0x0E:  ASL_ABS(); break;
@@ -311,45 +311,53 @@
 	}
 	void CPU::AND_IME() {
 		//OPCOE 0x29 2BYTES LONG
-		A = A & GetDataFromCPUMemoryUsing_IME_MODE();
+		A = A & *GetPointerToDataInCPUMemoryUsing_IME_MODE();
 		BaseAND(2);
 	}
 	void CPU::AND_ZABS() {
 		//opcode 0x25 2bytes long
-		A = A & GetDataFromCPUMemoryUsing_ZABS_MODE();
+		A = A & *GetPointerToDataInCPUMemoryUsing_ZABS_MODE();
 		BaseAND(2);
 	}    
 	void CPU::AND_ZINX() {
 		//opcode 0x35 2bytes long
-		A = A & GetDataFromCPUMemoryUsing_ZINX_MODE();
+		A = A & *GetPointerToDataInCPUMemoryUsing_ZINX_MODE();
 		BaseAND(2);
    }
 	void CPU::AND_ABS() {
 		//opcode 2D 3bytes long
 		
-		A = A & GetDataFromCPUMemoryUsing_ABS_MODE();
+		A = A & *GetPointerToDataInCPUMemoryUsing_ABS_MODE();
 		BaseAND(3);
 	}
 	void CPU::AND_INX_X() {
 		//opcode 3D 3bytes long
-		A = A& GetDataFromCPUMemoryUsing_INX_X_MODE();
+		A = A & *GetPointerToDataInCPUMemoryUsing_INX_X_MODE();
 		BaseAND(3);
 	}
 	void CPU::AND_INX_Y() {
 		//opcode 39 3bytes long
-		A = A & GetDataFromCPUMemoryUsing_INX_Y_MODE();
+		A = A & *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE();
 		BaseAND(3);
 	}
 	void CPU::AND_PRII() {
 		//opcode 21  2bytes long
 		
-		A = A & GetDataFromCPUMemoryUsing_PRII_MODE();
+		A = A & *GetPointerToDataInCPUMemoryUsing_PRII_MODE();
 		BaseAND(2);
 	}
 	void CPU::AND_POII() {
 		//opcode 31  2bytes long
 		
-		A = A & GetDataFromCPUMemoryUsing_POII_MODE();
+		A = A & *GetPointerToDataInCPUMemoryUsing_POII_MODE();
 		BaseAND(2);
+	}
+	////////////////  END    ///////////////
+
+	/////////   AND_INSTRUCTIONS
+	void CPU::ASL_ACC() {
+		if (GetAccumulatorSign()){SetCarry();}
+		else { ResetCarry();}
+		A = A << 1;
 	}
 	////////////////  END    ///////////////
