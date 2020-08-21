@@ -97,6 +97,7 @@
     <ClCompile Include="UnitTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HelperMethods.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
