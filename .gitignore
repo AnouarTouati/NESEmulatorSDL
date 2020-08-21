@@ -6,8 +6,8 @@
 
 references/
 
-
-
+roms/
+*.nes
 
 # User-specific files
 *.rsuser

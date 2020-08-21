@@ -1,15 +1,15 @@
 #include "pch.h"
 #include "CppUnitTest.h"
-#include "../NESEmulatorSDL/src/Log.h"
-#include "../NESEmulatorSDL/src/main.h"
-#include <sstream>
+#include "../NESEmulatorSDL/src/NESComponents.h"
+#include "../NESEmulatorSDL/src/CPU.h"
+#include "../NESEmulatorSDL/src/Masks.h"
+#include "../NESEmulatorSDL/src/CoreHeaders.h"
+
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTests
 {
-
-
-	TEST_CLASS(Class1)
+	TEST_CLASS(MEMORY_TESTS)
 	{
 
 	public:
@@ -227,8 +227,513 @@ namespace UnitTests
 			}
 			Assert::AreEqual(ActualSumOfRandomNumvers, SumOfRandomNumbersFromMemory);
 		}
+		
+		TEST_METHOD(ADC_IME) {
+			//0x69 opcode of ADC_IME 
+			//ADC_IME adds Accumulator + immediate value + carry
+			OriginalMainMemory = CreateMainMemory();
+		    CPU aCPU(NULL, OriginalMainMemory, NULL);
+
+			*OriginalMainMemory[0x0000] = 0x69;
+			*OriginalMainMemory[0x0001] = 0b01111000;
+			aCPU.A = 0b11111111;
+			//0b1111 1111 + 0b0111 1000 = 0b1 0111 0111
+			aCPU.PC = 0x0000;
+			Assert::AreEqual(0b00100000, (int)aCPU.P);
+			aCPU.ExecuteNextInstruction();
+			
+			
+			Assert::IsFalse(aCPU.GetOverflow());
+			Assert::IsTrue(aCPU.GetCarry());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::IsFalse(aCPU.GetSign());
+		}
+
 	};
-	
+
+	TEST_CLASS(AND_INSTRUCTIONS) {
+	public :
+		uint8_t** OriginalMainMemory;
 
 
+		TEST_METHOD(AND_IME) {
+			//opcode 0x29 2bytes long
+			OriginalMainMemory = CreateMainMemory();
+			CPU aCPU(NULL, OriginalMainMemory, NULL);
+
+
+			//TEST1 false false
+			*OriginalMainMemory[0x0000] = 0x29;
+			*OriginalMainMemory[0x0001] = 0b00000001;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000001, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+			///TEST2 false true
+			*OriginalMainMemory[0x0000] = 0x29;
+			*OriginalMainMemory[0x0001] = 0b00000000;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsTrue(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+
+			//TEST3 true false
+			*OriginalMainMemory[0x0000] = 0x29;
+			*OriginalMainMemory[0x0001] = 0b10000001;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000001, (int)aCPU.A);
+			Assert::IsTrue(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+			//TEST4 true true impossible
+
+		}
+		TEST_METHOD(AND_ZABS) {
+			//opcode 0x25 2bytes
+			OriginalMainMemory = CreateMainMemory();
+			CPU aCPU(NULL, OriginalMainMemory, NULL);
+
+
+			//TEST1 false false
+			*OriginalMainMemory[0x0000] = 0x25;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+
+			*OriginalMainMemory[0x00A0] = 0b00000001;
+
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000001, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+			///TEST2 false true
+			*OriginalMainMemory[0x0000] = 0x25;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+
+			*OriginalMainMemory[0x00A0] = 0b00000000;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsTrue(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+
+			//TEST3 true false
+			*OriginalMainMemory[0x0000] = 0x25;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+
+			*OriginalMainMemory[0x00A0] = 0b10000001;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000001, (int)aCPU.A);
+			Assert::IsTrue(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+		}
+		TEST_METHOD(AND_ZINX) {
+			//opcode 0x35
+			OriginalMainMemory = CreateMainMemory();
+			CPU aCPU(NULL, OriginalMainMemory, NULL);
+
+
+			//TEST1 false false
+			*OriginalMainMemory[0x0000] = 0x35;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+
+			aCPU.X = 0x01;
+			*OriginalMainMemory[0x00A1] = 0b00000001;
+
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000001, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+			///TEST2 false true
+			*OriginalMainMemory[0x0000] = 0x35;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+
+			aCPU.X = 0x01;
+			*OriginalMainMemory[0x00A1] = 0b00000000;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsTrue(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+
+			//TEST3 true false
+			*OriginalMainMemory[0x0000] = 0x35;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+
+			aCPU.X = 0x01;
+			*OriginalMainMemory[0x00A1] = 0b10000001;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000001, (int)aCPU.A);
+			Assert::IsTrue(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(AND_ABS) {
+			//opcode 0x2D 3bytes
+			OriginalMainMemory = CreateMainMemory();
+			CPU aCPU(NULL, OriginalMainMemory, NULL);
+
+
+			//TEST1 false false
+			*OriginalMainMemory[0x0000] = 0x2D;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+			*OriginalMainMemory[0x0002] = 0xB0;//instruction data
+
+			*OriginalMainMemory[0xB0A0] = 0b00000001;
+
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000001, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0003, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+			///TEST2 false true
+			*OriginalMainMemory[0x0000] = 0x2D;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+			*OriginalMainMemory[0x0002] = 0xB0;//instruction data
+
+			*OriginalMainMemory[0xB0A0] = 0b00000000;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsTrue(aCPU.GetZero());
+			Assert::AreEqual(0x0003, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+
+			//TEST3 true false
+			*OriginalMainMemory[0x0000] = 0x2D;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+			*OriginalMainMemory[0x0002] = 0xB0;//instruction data
+
+			*OriginalMainMemory[0xB0A0] = 0b10000001;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000001, (int)aCPU.A);
+			Assert::IsTrue(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0003, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(AND_INX_X) {
+			//opcode 0x3D 3bytes
+			OriginalMainMemory = CreateMainMemory();
+			CPU aCPU(NULL, OriginalMainMemory, NULL);
+
+
+			//TEST1 false false
+			*OriginalMainMemory[0x0000] = 0x3D;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+			*OriginalMainMemory[0x0002] = 0xB0;//instruction data
+
+			aCPU.X = 0x01;
+
+			*OriginalMainMemory[0xB0A1] = 0b00000001;
+
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000001, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0003, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+			///TEST2 false true
+			*OriginalMainMemory[0x0000] = 0x3D;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+			*OriginalMainMemory[0x0002] = 0xB0;//instruction data
+
+			aCPU.X = 0x01;
+
+			*OriginalMainMemory[0xB0A1] = 0b00000000;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsTrue(aCPU.GetZero());
+			Assert::AreEqual(0x0003, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+
+			//TEST3 true false
+			*OriginalMainMemory[0x0000] = 0x3D;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+			*OriginalMainMemory[0x0002] = 0xB0;//instruction data
+
+			aCPU.X = 0x01;
+
+			*OriginalMainMemory[0xB0A1] = 0b10000001;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000001, (int)aCPU.A);
+			Assert::IsTrue(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0003, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(AND_INX_Y) {
+			//opcode 0x39 3bytes
+			OriginalMainMemory = CreateMainMemory();
+			CPU aCPU(NULL, OriginalMainMemory, NULL);
+
+
+			//TEST1 false false
+			*OriginalMainMemory[0x0000] = 0x39;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+			*OriginalMainMemory[0x0002] = 0xB0;//instruction data
+
+			aCPU.Y = 0x01;
+
+			*OriginalMainMemory[0xB0A1] = 0b00000001;
+
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000001, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0003, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+			///TEST2 false true
+			*OriginalMainMemory[0x0000] = 0x39;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+			*OriginalMainMemory[0x0002] = 0xB0;//instruction data
+
+			aCPU.Y = 0x01;
+
+			*OriginalMainMemory[0xB0A1] = 0b00000000;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsTrue(aCPU.GetZero());
+			Assert::AreEqual(0x0003, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+
+			//TEST3 true false
+			*OriginalMainMemory[0x0000] = 0x39;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+			*OriginalMainMemory[0x0002] = 0xB0;//instruction data
+
+			aCPU.Y = 0x01;
+
+			*OriginalMainMemory[0xB0A1] = 0b10000001;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000001, (int)aCPU.A);
+			Assert::IsTrue(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0003, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(AND_PRII) {
+			//opcode 0x21 2bytes
+			OriginalMainMemory = CreateMainMemory();
+			CPU aCPU(NULL, OriginalMainMemory, NULL);
+
+
+			//TEST1 false false
+			*OriginalMainMemory[0x0000] = 0x21;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+			aCPU.X = 0x01;
+			*OriginalMainMemory[0xA1] = 0xF0;
+			*OriginalMainMemory[0xF0] = 0b00000001;
+
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000001, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+			///TEST2 false true
+			*OriginalMainMemory[0x0000] = 0x21;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+			aCPU.X = 0x01;
+			*OriginalMainMemory[0xA1] = 0xF0;
+
+			*OriginalMainMemory[0xF0] = 0b00000000;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsTrue(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+
+			//TEST3 true false
+			*OriginalMainMemory[0x0000] = 0x21;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+			aCPU.X = 0x01;
+			*OriginalMainMemory[0xA1] = 0xF0;
+			*OriginalMainMemory[0xF0] = 0b10000001;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000001, (int)aCPU.A);
+			Assert::IsTrue(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(AND_POII) {
+			//opcode 0x31 2bytes
+			OriginalMainMemory = CreateMainMemory();
+			CPU aCPU(NULL, OriginalMainMemory, NULL);
+
+
+			//TEST1 false false
+			*OriginalMainMemory[0x0000] = 0x31;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+
+			*OriginalMainMemory[0x00A0] = 0xB0;
+			*OriginalMainMemory[0x00A1] = 0xC0;
+
+			aCPU.Y = 0x01;
+
+			*OriginalMainMemory[0xC0B1] = 0b00000001;
+
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000001, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+			///TEST2 false true
+			*OriginalMainMemory[0x0000] = 0x31;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+
+			*OriginalMainMemory[0x00A0] = 0xB0;
+			*OriginalMainMemory[0x00A1] = 0xC0;
+			aCPU.Y = 0x01;
+
+
+			*OriginalMainMemory[0xC0B1] = 0b00000000;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU.A);
+			Assert::IsFalse(aCPU.GetSign());
+			Assert::IsTrue(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+
+
+
+			//TEST3 true false
+			*OriginalMainMemory[0x0000] = 0x31;//instruction data
+			*OriginalMainMemory[0x0001] = 0xA0;//instruction data
+
+			*OriginalMainMemory[0x00A0] = 0xB0;
+			*OriginalMainMemory[0x00A1] = 0xC0;
+			aCPU.Y = 0x01;
+
+			*OriginalMainMemory[0xC0B1] = 0b10000001;
+			aCPU.A = 0b11111111;
+			aCPU.PC = 0x0000;
+			aCPU.ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000001, (int)aCPU.A);
+			Assert::IsTrue(aCPU.GetSign());
+			Assert::IsFalse(aCPU.GetZero());
+			Assert::AreEqual(0x0002, (int)aCPU.PC);
+			Assert::IsTrue(aCPU.FinishedExecutingCurrentInsctruction);
+		}
+	};
 }
