@@ -298,112 +298,58 @@
 
 		PC = PC + 2;
 	}
-	void CPU::AND_IME() {
-		//OPCOE 0x29 2BYTES LONG
-		
-		A = A & *CPUMemory[PC + 1];
-
+	/////////   AND_INSTRUCTIONS
+	void CPU::BaseAND(uint8_t InstructionLength) {
 		if (A == 0) { SetZero(); }
 		else { ResetZero(); }
 
 		if (GetAccumulatorSign()) { SetSign(); }
-		else { ResetSign();}
+		else { ResetSign(); }
 
-		PC = PC + 2;
+		PC = PC + InstructionLength;
 		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::AND_IME() {
+		//OPCOE 0x29 2BYTES LONG
+		A = A & GetDataFromCPUMemoryUsing_IME_MODE();
+		BaseAND(2);
 	}
 	void CPU::AND_ZABS() {
 		//opcode 0x25 2bytes long
-		A = A & *CPUMemory[*CPUMemory[PC + 1]];
-
-		if (A == 0) { SetZero(); }
-		else { ResetZero(); }
-
-		if (GetAccumulatorSign()) { SetSign(); }
-		else { ResetSign(); }
-
-		PC = PC + 2;
-		FinishedExecutingCurrentInsctruction = true;
+		A = A & GetDataFromCPUMemoryUsing_ZABS_MODE();
+		BaseAND(2);
 	}    
 	void CPU::AND_ZINX() {
 		//opcode 0x35 2bytes long
-		A = A & *CPUMemory[*CPUMemory[PC + 1]+X];
-
-		if (A == 0) { SetZero(); }
-		else { ResetZero(); }
-
-		if (GetAccumulatorSign()) { SetSign(); }
-		else { ResetSign(); }
-
-		PC = PC + 2;
-		FinishedExecutingCurrentInsctruction = true;
+		A = A & GetDataFromCPUMemoryUsing_ZINX_MODE();
+		BaseAND(2);
    }
 	void CPU::AND_ABS() {
 		//opcode 2D 3bytes long
 		
-		A = A & *CPUMemory[Get16BitAddressFromMemoryLocation(PC+1)];
-
-		if (A == 0) { SetZero(); }
-		else { ResetZero(); }
-
-		if (GetAccumulatorSign()) { SetSign(); }
-		else { ResetSign(); }
-
-		PC = PC + 3;
-		FinishedExecutingCurrentInsctruction = true;
+		A = A & GetDataFromCPUMemoryUsing_ABS_MODE();
+		BaseAND(3);
 	}
 	void CPU::AND_INX_X() {
 		//opcode 3D 3bytes long
-		A = A & *CPUMemory[Get16BitAddressFromMemoryLocation(PC+1)+X];
-
-		if (A == 0) { SetZero(); }
-		else { ResetZero(); }
-
-		if (GetAccumulatorSign()) { SetSign(); }
-		else { ResetSign(); }
-
-		PC = PC + 3;
-		FinishedExecutingCurrentInsctruction = true;
+		A = A& GetDataFromCPUMemoryUsing_INX_X_MODE();
+		BaseAND(3);
 	}
 	void CPU::AND_INX_Y() {
 		//opcode 39 3bytes long
-		A = A & *CPUMemory[Get16BitAddressFromMemoryLocation(PC+1) + Y];
-
-		if (A == 0) { SetZero(); }
-		else { ResetZero(); }
-
-		if (GetAccumulatorSign()) { SetSign(); }
-		else { ResetSign(); }
-
-		PC = PC + 3;
-		FinishedExecutingCurrentInsctruction = true;
+		A = A & GetDataFromCPUMemoryUsing_INX_Y_MODE();
+		BaseAND(3);
 	}
 	void CPU::AND_PRII() {
 		//opcode 21  2bytes long
-		uint8_t ActualAddress = *CPUMemory[*CPUMemory[PC + 1] + X];
-		A = A & *CPUMemory[ActualAddress];
-
-		if (A == 0) { SetZero(); }
-		else { ResetZero(); }
-
-		if (GetAccumulatorSign()) { SetSign(); }
-		else { ResetSign(); }
-
-		PC = PC + 2;
-		FinishedExecutingCurrentInsctruction = true;
+		
+		A = A & GetDataFromCPUMemoryUsing_PRII_MODE();
+		BaseAND(2);
 	}
 	void CPU::AND_POII() {
 		//opcode 31  2bytes long
 		
-		uint16_t ActualAddress = Get16BitAddressFromMemoryLocation(*CPUMemory[PC + 1]) + Y;
-		A = A & *CPUMemory[ActualAddress];
-
-		if (A == 0) { SetZero(); }
-		else { ResetZero(); }
-
-		if (GetAccumulatorSign()) { SetSign(); }
-		else { ResetSign(); }
-
-		PC = PC + 2;
-		FinishedExecutingCurrentInsctruction = true;
+		A = A & GetDataFromCPUMemoryUsing_POII_MODE();
+		BaseAND(2);
 	}
+	////////////////  END    ///////////////
