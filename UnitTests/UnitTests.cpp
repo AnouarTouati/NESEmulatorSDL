@@ -1323,4 +1323,220 @@ namespace UnitTests
 
 	}
 	};
+	TEST_CLASS(TRANSFER_FAMILY_INSTRUCTIONS) {
+		TEST_METHOD(TYA) {
+			uint8_t OPCode = 0x98;
+			CPU* aCPU;
+			
+			//TEST1
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->Y = 0b10000000;
+			aCPU->A = 0x00;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000000, (int)aCPU->A);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST2
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->Y = 0b00000000;
+			aCPU->A = 0xF0;//RANDOM AND NOT ZERO
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU->A);
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsTrue(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST3
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->Y = 0b00001000;
+			aCPU->A = 0x00;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00001000, (int)aCPU->A);
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(TXS) {
+			uint8_t OPCode = 0x9A;
+			CPU* aCPU;
+
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->X = 0xFC;
+			aCPU->SP = 0x00;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0xFC, (int)aCPU->SP);
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+
+		TEST_METHOD(TXA) {
+			uint8_t OPCode = 0x8A;
+			CPU* aCPU;
+
+			//TEST1
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->X = 0b10000000;
+			aCPU->A = 0x00;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000000, (int)aCPU->A);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST2
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->X = 0b00000000;
+			aCPU->A = 0xF0;//RANDOM AND NOT ZERO
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU->A);
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsTrue(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST3
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->X = 0b00001000;
+			aCPU->A = 0x00;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00001000, (int)aCPU->A);
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(TSX) {
+			uint8_t OPCode = 0xBA;
+			CPU* aCPU;
+
+			//TEST1
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->SP = 0b10000000;
+			aCPU->X = 0x00;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000000, (int)aCPU->X);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST2
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->SP = 0b00000000;
+			aCPU->X = 0xF0;//RANDOM AND NOT ZERO
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU->X);
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsTrue(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST3
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->SP = 0b00001000;
+			aCPU->X = 0x00;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00001000, (int)aCPU->X);
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(TAY) {
+			uint8_t OPCode = 0xA8;
+			CPU* aCPU;
+
+			//TEST1
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->A = 0b10000000;
+			aCPU->Y = 0x00;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000000, (int)aCPU->Y);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST2
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->A = 0b00000000;
+			aCPU->Y = 0xF0;//RANDOM AND NOT ZERO
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU->Y);
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsTrue(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST3
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->A = 0b00001000;
+			aCPU->Y = 0x00;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00001000, (int)aCPU->Y);
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(TAX) {
+			uint8_t OPCode = 0xAA;
+			CPU* aCPU;
+
+			//TEST1
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->A = 0b10000000;
+			aCPU->X = 0x00;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b10000000, (int)aCPU->X);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST2
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->A = 0b00000000;
+			aCPU->X = 0xF0;//RANDOM AND NOT ZERO
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00000000, (int)aCPU->X);
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsTrue(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST3
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->A = 0b00001000;
+			aCPU->X = 0x00;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0b00001000, (int)aCPU->X);
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+	};
 }

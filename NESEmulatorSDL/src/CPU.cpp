@@ -116,7 +116,7 @@
 		//case 0x85:  STA_ZABS(); break;
 		//case 0x86:  STX_ZABS(); break;
 		//case 0x88:  DEY(); break;
-		//case 0x8A:  TXA(); break;
+		case 0x8A:  TXA(); break;
 		//case 0x8C:  STY_ABS(); break;
 		//case 0x8D:  STA_ABS(); break;
 		//case 0x8E:  STX_ABS(); break;
@@ -125,9 +125,9 @@
 		//case 0x94:  STY_ZINX(); break;
 		//case 0x95:  STA_ZINX(); break;
 		//case 0x96:  STX_ZINY(); break;
-		//case 0x98:  TYA(); break;
+		case 0x98:  TYA(); break;
 		//case 0x99:  STA_INX_Y(); break;
-		//case 0x9A:  TXS(); break;
+		case 0x9A:  TXS(); break;
 		//case 0x9D:  STA_INX_X(); break;
 		//case 0xA0:  LDY_IME(); break;
 		//case 0xA1:  LDA_PRII(); break;
@@ -135,9 +135,9 @@
 		//case 0xA4:  LDY_ZABS(); break;
 		//case 0xA5:  LDA_ZABS(); break;
 		//case 0xA6:  LDX_ZABS(); break;
-		//case 0xA8:  TAY(); break;
+		case 0xA8:  TAY(); break;
 		//case 0xA9:  LDA_IME(); break;
-		//case 0xAA:  TAX(); break;
+		case 0xAA:  TAX(); break;
 		//case 0xAC:  LDY_ABS(); break;
 		//case 0xAD:  LDA_ABS(); break;
 		//case 0xAE:  LDX_ABS(); break;
@@ -148,7 +148,7 @@
 		//case 0xB6:  LDX_ZINY(); break;
 		case 0xB8:  CLV(); break;
 		//case 0xB9:  LDA_INX_Y(); break;
-		//case 0xBA:  TSX(); break;
+		case 0xBA:  TSX(); break;
 		//case 0xBC:  LDY_INX_X(); break;
 		//case 0xBD:  LDA_INX_X(); break;
 		//case 0xBE:  LDX_INX_Y(); break;
@@ -593,6 +593,70 @@
 	void CPU::SEI() {
 		//opcode 0x78 1 byte long
 		SetInterruptDisbale();
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	////////////////  END    /////////////// 
+	
+	/////////   TRANSFER FAMILY INSTRUCTIONS 
+	void CPU::TYA() {
+		//opcode 0x98 1 byte long
+		A = Y;
+		if (GetSignFromData(&A)) {SetSign();}
+		else { ResetSign(); }
+		if (A == 0) { SetZero(); }
+		else { ResetZero(); }
+
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::TXS() {
+		//OPCODE 0x9A 1 byte long
+		SP = X;
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::TXA() {
+		//opcode 0x8A 1 byte long
+		A = X;
+		if (GetSignFromData(&A)) { SetSign(); }
+		else { ResetSign(); }
+		if (A == 0) { SetZero(); }
+		else { ResetZero(); }
+
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::TSX() {
+		//opcode 0xBA 1 byte long
+		X = SP;
+		if (GetSignFromData(&X)) { SetSign(); }
+		else { ResetSign(); }
+		if (X == 0) { SetZero(); }
+		else { ResetZero(); }
+
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::TAY() {
+		//opcode 0xA8 1 byte long
+		Y = A;
+		if (GetSignFromData(&Y)) { SetSign(); }
+		else { ResetSign(); }
+		if (Y == 0) { SetZero(); }
+		else { ResetZero(); }
+
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::TAX() {
+		//opcode 0xAA 1 byte long
+		X = A;
+		if (GetSignFromData(&X)) { SetSign(); }
+		else { ResetSign(); }
+		if (X == 0) { SetZero(); }
+		else { ResetZero(); }
+
 		PC = PC + 1;
 		FinishedExecutingCurrentInsctruction = true;
 	}

@@ -276,7 +276,7 @@
 		// void  STA_ZABS(); 
 		// void  STX_ZABS(); 
 		// void  DEY(); 
-		// void  TXA(); 
+		 void  TXA(); 
 		// void  STY_ABS(); 
 		// void  STA_ABS(); 
 		// void  STX_ABS(); 
@@ -285,9 +285,9 @@
 		// void  STY_ZINX(); 
 		// void  STA_ZINX(); 
 		// void  STX_ZINY(); 
-		// void  TYA(); 
+		 void  TYA(); 
 		// void  STA_INX_Y(); 
-		// void  TXS(); 
+		 void  TXS(); 
 		// void  STA_INX_X(); 
 		// void  LDY_IME(); 
 		// void  LDA_PRII(); 
@@ -295,9 +295,9 @@
 		// void  LDY_ZABS(); 
 		// void  LDA_ZABS(); 
 		// void  LDX_ZABS(); 
-		// void  TAY(); 
+		 void  TAY(); 
 		// void  LDA_IME(); 
-		// void  TAX(); 
+		 void  TAX(); 
 		// void  LDY_ABS(); 
 		// void  LDA_ABS(); 
 		// void  LDX_ABS(); 
@@ -308,7 +308,7 @@
 		// void  LDX_ZINY(); 
 		 void  CLV(); 
 		// void  LDA_INX_Y(); 
-		// void  TSX(); 
+		 void  TSX(); 
 		// void  LDY_INX_X(); 
 		// void  LDA_INX_X(); 
 		// void  LDX_INX_Y(); 
