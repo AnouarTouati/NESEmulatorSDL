@@ -1539,4 +1539,90 @@ namespace UnitTests
 			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
 		}
 	};
+	TEST_CLASS(STA_INSTRUCTIONS) {
+		TEST_METHOD(STA_ZABS) {
+			uint8_t OPCode = 0x85;
+			uint8_t InstructionLength=0x02;
+			CPU* aCPU;
+
+			aCPU = CreateZABS_Instruction(OPCode, 0x12/*A Random number*/);
+			aCPU->A = 0xD1;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0xD1, (int)*aCPU->CPUMemory[TargetDataAddress_ZABS_MODE]);
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(STA_ZINX) {
+			uint8_t OPCode = 0x95;
+			uint8_t InstructionLength = 0x02;
+			CPU* aCPU;
+
+			aCPU = CreateZINX_Instruction(OPCode, 0x12/*A Random number*/);
+			aCPU->A = 0x36;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x36, (int)*aCPU->CPUMemory[TargetDataAddress_ZINX_MODE]);
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(STA_ABS) {
+			uint8_t OPCode = 0x8D;
+			uint8_t InstructionLength = 0x03;
+			CPU* aCPU;
+
+			aCPU = CreateABS_Instruction(OPCode, 0x12/*A Random number*/);
+			aCPU->A = 0x77;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x77, (int)*aCPU->CPUMemory[TargetDataAddress_ABS_MODE]);
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(STA_INX_X) {
+			uint8_t OPCode = 0x9D;
+			uint8_t InstructionLength = 0x03;
+			CPU* aCPU;
+
+			aCPU = CreateINX_X_Instruction(OPCode, 0x12/*A Random number*/);
+			aCPU->A = 0x89;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x89, (int)*aCPU->CPUMemory[TargetDataAddress_INX_X_MODE]);
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(STA_INX_Y) {
+			uint8_t OPCode = 0x99;
+			uint8_t InstructionLength = 0x03;
+			CPU* aCPU;
+
+			aCPU = CreateINX_Y_Instruction(OPCode, 0x12/*A Random number*/);
+			aCPU->A = 0x33;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x33, (int)*aCPU->CPUMemory[TargetDataAddress_INX_Y_MODE]);
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(STA_PRII) {
+			uint8_t OPCode = 0x81;
+			uint8_t InstructionLength = 0x02;
+			CPU* aCPU;
+
+			aCPU = CreatePRII_Instruction(OPCode, 0x12/*A Random number*/);
+			aCPU->A = 0xE3;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0xE3, (int)*aCPU->CPUMemory[TargetDataAddress_PRII_MODE]);
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(STA_POII) {
+			uint8_t OPCode = 0x91;
+			uint8_t InstructionLength = 0x02;
+			CPU* aCPU;
+
+			aCPU = CreatePOII_Instruction(OPCode, 0x12/*A Random number*/);
+			aCPU->A = 0x45;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x45, (int)*aCPU->CPUMemory[TargetDataAddress_POII_MODE]);
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+	};
 }
