@@ -41,6 +41,7 @@ CPU* CreateZINX_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRe
 	*OriginalMainMemory[0x00A1] = ValueThatWillBeRetrievedOnExecution;
 	return aCPU;
 }
+//ADDRESSING MODES TO GET OPERAND
 CPU* CreateABS_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRetrievedOnExecution, uint8_t** OriginalMainMemory) {
 	OriginalMainMemory = CreateMainMemory();
 	CPU* aCPU = new CPU(NULL, OriginalMainMemory, NULL);
@@ -97,5 +98,14 @@ CPU* CreateACC_Instruction(uint8_t InstructionOPcode, uint8_t** OriginalMainMemo
 	CPU* aCPU = new CPU(NULL, OriginalMainMemory, NULL);
 	*OriginalMainMemory[0x0000] = InstructionOPcode;
 	
+	return aCPU;
+}
+//MISCELENIOUS
+CPU* CreatBRANCH_FAMILY_Instruction(uint8_t InstructionOPcode, uint8_t DisplacementValue, uint8_t** OriginalMainMemory) {
+	OriginalMainMemory = CreateMainMemory();
+	CPU* aCPU = new CPU(NULL, OriginalMainMemory, NULL);
+	*OriginalMainMemory[0x8000] = InstructionOPcode;
+	*OriginalMainMemory[0x8001] =DisplacementValue;
+	aCPU->PC = 0x8000;
 	return aCPU;
 }

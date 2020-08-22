@@ -181,12 +181,16 @@
 			P = P & 0b01111111;
 		}
 
-
+		
 
 		void BaseAND(uint8_t InstructionLength);
 		void BaseASL(uint8_t InstructionLength,uint8_t* DataThaWillBeAltered);
-
-
+		struct BaseBranchReturnType {
+			bool Sign;
+			uint8_t UnSignedOperand;
+		};
+		BaseBranchReturnType BaseBranch();
+		
 
 		
 		// void BRK(); 
@@ -198,7 +202,7 @@
 		 void  ASL_ACC();
 		// void  ORA_ABS();
 		 void  ASL_ABS();
-		// void  BPL();
+		 void  BPL();
 		// void  ORA_POII();
 		// void ORA_ZINX();
 		 void ASL_ZINX();
@@ -217,7 +221,7 @@
 		// void  BIT_ABS();
 		 void  AND_ABS();
 		// void  ROL_ABS();
-		// void  BMI();
+		 void  BMI();
 		 void  AND_POII();
 		 void  AND_ZINX();
 		// void  ROL_ZINX();
@@ -235,7 +239,7 @@
 		// void  JMP_ABS(); 
 		// void  EOR_ABS(); 
 		// void  LSR_ABS(); 
-		// void  BVC(); 
+		 void  BVC(); 
 		// void  EOR_POII(); 
 		// void  EOR_ZINX(); 
 		// void  LSR_ZINX(); 
@@ -259,7 +263,7 @@
 		// void  JMP_IND(); 
 		// void  ADC_ABS(); 
 		// void  ROR_ABS(); 
-		// void  BVS(); 
+		 void  BVS(); 
 		// void  ADC_POII(); 
 		// void  ADC_ZINX(); 
 		// void  ROR_ZINX(); 
@@ -276,7 +280,7 @@
 		// void  STY_ABS(); 
 		// void  STA_ABS(); 
 		// void  STX_ABS(); 
-		// void  BCC(); 
+		 void  BCC(); 
 		// void  STA_POII(); 
 		// void  STY_ZINX(); 
 		// void  STA_ZINX(); 
@@ -297,7 +301,7 @@
 		// void  LDY_ABS(); 
 		// void  LDA_ABS(); 
 		// void  LDX_ABS(); 
-		// void  BCS(); 
+		 void  BCS(); 
 		// void  LDA_POII_Y(); 
 		// void  LDY_ZINX(); 
 		// void  LDA_ZINX(); 
@@ -318,7 +322,7 @@
 		// void  DEX(); 
 		// void  CPY_ABS(); 
 		// void  CMP_ABS(); 
-		// void  BNE(); 
+		 void  BNE(); 
 		// void  CMP_POII(); 
 		// void  CMP_ZINX(); 
 		// void  DEC_ZINX(); 
@@ -337,7 +341,7 @@
 		// void  CPX_ABS(); 
 		// void  SBC_ABS(); 
 		// void  INC_ABS(); 
-		// void  BEQ(); 
+		 void  BEQ(); 
 		// void  SBC_POII(); 
 		// void  SBC_ZINX(); 
 		// void  INC_ZINX(); 

@@ -868,5 +868,269 @@ namespace UnitTests
 		}
 		
 	};
+	TEST_CLASS(BRANCH_INSTRUCTIONS_FAMILY) {
+		uint8_t** OriginalMainMemory;
+		
+		TEST_METHOD(BCC) {
+			//opcode 0x90 2bytes
+			CPU* aCPU;
+
+			////// BACKWARD DISPLACEMENT IF ResetCarry
+			//TEST1
+			aCPU = CreatBRANCH_FAMILY_Instruction(0x90, 0b10000010, OriginalMainMemory);
+			aCPU->ResetCarry();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x7FFE, (int)aCPU->PC);
+
+			//TEST2
+			aCPU = CreatBRANCH_FAMILY_Instruction(0x90, 0b10000010, OriginalMainMemory);
+			aCPU->SetCarry();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+
+			////// FORWARD DISPLACEMENT IF ResetCarry
+
+			//TEST3
+			/// Forward Displacment should atleast be 2 to pass this instruction length
+			aCPU = CreatBRANCH_FAMILY_Instruction(0x90, 0b00000100, OriginalMainMemory);
+			aCPU->ResetCarry();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8004, (int)aCPU->PC);
+
+			//TEST4
+			aCPU = CreatBRANCH_FAMILY_Instruction(0x90, 0b10000100, OriginalMainMemory);
+			aCPU->SetCarry();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+		}
+		TEST_METHOD(BCS) {
+			//opcode 0xB0 2bytes
+			CPU* aCPU;
+
+			////// BACKWARD DISPLACEMENT IF SetCarry
+			//TEST1
+			aCPU = CreatBRANCH_FAMILY_Instruction(0xB0, 0b10000010, OriginalMainMemory);
+			aCPU->SetCarry();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x7FFE, (int)aCPU->PC);
+
+			//TEST2
+			aCPU = CreatBRANCH_FAMILY_Instruction(0xB0, 0b10000010, OriginalMainMemory);
+			aCPU->ResetCarry();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+
+			////// FORWARD DISPLACEMENT IF SetCarry
+
+			//TEST3
+			/// Forward Displacment should atleast be 2 to pass this instruction length
+			aCPU = CreatBRANCH_FAMILY_Instruction(0xB0, 0b00000100, OriginalMainMemory);
+			aCPU->SetCarry();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8004, (int)aCPU->PC);
+
+			//TEST4
+			aCPU = CreatBRANCH_FAMILY_Instruction(0xB0, 0b10000100, OriginalMainMemory);
+			aCPU->ResetCarry();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+		}
+		TEST_METHOD(BEQ) {
+			//opcode 0xF0 2bytes
+			CPU* aCPU;
+
+			////// BACKWARD DISPLACEMENT IF SetCarry
+			//TEST1
+			aCPU = CreatBRANCH_FAMILY_Instruction(0xF0, 0b10000010, OriginalMainMemory);
+			aCPU->SetZero();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x7FFE, (int)aCPU->PC);
+
+			//TEST2
+			aCPU = CreatBRANCH_FAMILY_Instruction(0xF0, 0b10000010, OriginalMainMemory);
+			aCPU->ResetZero();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+
+			////// FORWARD DISPLACEMENT IF SetCarry
+
+			//TEST3
+			/// Forward Displacment should atleast be 2 to pass this instruction length
+			aCPU = CreatBRANCH_FAMILY_Instruction(0xF0, 0b00000100, OriginalMainMemory);
+			aCPU->SetZero();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8004, (int)aCPU->PC);
+
+			//TEST4
+			aCPU = CreatBRANCH_FAMILY_Instruction(0xF0, 0b10000100, OriginalMainMemory);
+			aCPU->ResetZero();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+		}
+		TEST_METHOD(BMI) {
+			//opcode 0x30 2bytes
+			CPU* aCPU;
+
+			////// BACKWARD DISPLACEMENT IF SetCarry
+			//TEST1
+			aCPU = CreatBRANCH_FAMILY_Instruction(0x30, 0b10000010, OriginalMainMemory);
+			aCPU->SetSign();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x7FFE, (int)aCPU->PC);
+
+			//TEST2
+			aCPU = CreatBRANCH_FAMILY_Instruction(0x30, 0b10000010, OriginalMainMemory);
+			aCPU->ResetSign();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+
+			////// FORWARD DISPLACEMENT IF SetCarry
+
+			//TEST3
+			/// Forward Displacment should atleast be 2 to pass this instruction length
+			aCPU = CreatBRANCH_FAMILY_Instruction(0x30, 0b00000100, OriginalMainMemory);
+			aCPU->SetSign();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8004, (int)aCPU->PC);
+
+			//TEST4
+			aCPU = CreatBRANCH_FAMILY_Instruction(0x30, 0b10000100, OriginalMainMemory);
+			aCPU->ResetSign();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+		}
+		TEST_METHOD(BNE) {
+			//opcode 0xD0 2bytes
+			uint8_t OPCode = 0xD0;
+			CPU* aCPU;
+
+			////// BACKWARD DISPLACEMENT IF SetCarry
+			//TEST1
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b10000010, OriginalMainMemory);
+			aCPU->ResetZero();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x7FFE, (int)aCPU->PC);
+
+			//TEST2
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b10000010, OriginalMainMemory);
+			aCPU->SetZero();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+
+			////// FORWARD DISPLACEMENT IF SetCarry
+
+			//TEST3
+			/// Forward Displacment should atleast be 2 to pass this instruction length
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b00000100, OriginalMainMemory);
+			aCPU->ResetZero();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8004, (int)aCPU->PC);
+
+			//TEST4
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b10000100, OriginalMainMemory);
+			aCPU->SetZero();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+		}
+		TEST_METHOD(BPL) {
+			//opcode 0x10 2bytes
+			uint8_t OPCode = 0x10;
+			CPU* aCPU;
+
+			////// BACKWARD DISPLACEMENT IF SetCarry
+			//TEST1
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b10000010, OriginalMainMemory);
+			aCPU->ResetSign();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x7FFE, (int)aCPU->PC);
+
+			//TEST2
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b10000010, OriginalMainMemory);
+			aCPU->SetSign();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+
+			////// FORWARD DISPLACEMENT IF SetCarry
+
+			//TEST3
+			/// Forward Displacment should atleast be 2 to pass this instruction length
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b00000100, OriginalMainMemory);
+			aCPU->ResetSign();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8004, (int)aCPU->PC);
+
+			//TEST4
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b10000100, OriginalMainMemory);
+			aCPU->SetSign();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+		}
+		TEST_METHOD(BVC) {
+			//opcode 0x50 2bytes
+			uint8_t OPCode = 0x50;
+			CPU* aCPU;
+
+			////// BACKWARD DISPLACEMENT IF SetCarry
+			//TEST1
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b10000010, OriginalMainMemory);
+			aCPU->ResetOverflow();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x7FFE, (int)aCPU->PC);
+
+			//TEST2
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b10000010, OriginalMainMemory);
+			aCPU->SetOverflow();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+
+			////// FORWARD DISPLACEMENT IF SetCarry
+
+			//TEST3
+			/// Forward Displacment should atleast be 2 to pass this instruction length
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b00000100, OriginalMainMemory);
+			aCPU->ResetOverflow();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8004, (int)aCPU->PC);
+
+			//TEST4
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b10000100, OriginalMainMemory);
+			aCPU->SetOverflow();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+		}
+		TEST_METHOD(BVS) {
+			//opcode 0x70 2bytes
+			uint8_t OPCode = 0x70;
+			CPU* aCPU;
+
+			////// BACKWARD DISPLACEMENT IF SetCarry
+			//TEST1
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b10000010, OriginalMainMemory);
+			aCPU->SetOverflow();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x7FFE, (int)aCPU->PC);
+
+			//TEST2
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b10000010, OriginalMainMemory);
+			aCPU->ResetOverflow();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+
+			////// FORWARD DISPLACEMENT IF SetCarry
+
+			//TEST3
+			/// Forward Displacment should atleast be 2 to pass this instruction length
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b00000100, OriginalMainMemory);
+			aCPU->SetOverflow();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8004, (int)aCPU->PC);
+
+			//TEST4
+			aCPU = CreatBRANCH_FAMILY_Instruction(OPCode, 0b10000100, OriginalMainMemory);
+			aCPU->ResetOverflow();
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x8002, (int)aCPU->PC);
+		}
+	};
 	
 }

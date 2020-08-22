@@ -32,7 +32,7 @@
 		//case 0x0D:  ORA_ABS(); break;
 		case 0x0E:  ASL_ABS(); break;
 		//
-		//case 0x10:  BPL(); break;
+		case 0x10:  BPL(); break;
 		//case 0x11:  ORA_POII(); break;
 		//
 		//case 0x15: ORA_ZINX (); break;
@@ -59,7 +59,7 @@
 		case 0x2D:  AND_ABS(); break;
 		//case 0x2E:  ROL_ABS(); break;
 		//
-		//case 0x30:  BMI(); break;
+		case 0x30:  BMI(); break;
 		case 0x31:  AND_POII(); break;
 		//
 		case 0x35:  AND_ZINX(); break;
@@ -80,7 +80,7 @@
 		//case 0x4C:  JMP_ABS(); break;
 		//case 0x4D:  EOR_ABS(); break;
 		//case 0x4E:  LSR_ABS(); break;
-		//case 0x50:  BVC(); break;
+		case 0x50:  BVC(); break;
 		//case 0x51:  EOR_POII(); break;
 		//case 0x55:  EOR_ZINX(); break;
 		//case 0x56:  LSR_ZINX(); break;
@@ -103,7 +103,7 @@
 		//case 0x6C:  JMP_IND(); break;
 		//case 0x6D:  ADC_ABS(); break;
 		//case 0x6E:  ROR_ABS(); break;
-		//case 0x70:  BVS(); break;
+		case 0x70:  BVS(); break;
 		//case 0x71:  ADC_POII(); break;
 		//case 0x75:  ADC_ZINX(); break;
 		//case 0x76:  ROR_ZINX(); break;
@@ -120,7 +120,7 @@
 		//case 0x8C:  STY_ABS(); break;
 		//case 0x8D:  STA_ABS(); break;
 		//case 0x8E:  STX_ABS(); break;
-		//case 0x90:  BCC(); break;
+		case 0x90:  BCC(); break;
 		//case 0x91:  STA_POII(); break;
 		//case 0x94:  STY_ZINX(); break;
 		//case 0x95:  STA_ZINX(); break;
@@ -141,7 +141,7 @@
 		//case 0xAC:  LDY_ABS(); break;
 		//case 0xAD:  LDA_ABS(); break;
 		//case 0xAE:  LDX_ABS(); break;
-		//case 0xB0:  BCS(); break;
+		case 0xB0:  BCS(); break;
 		//case 0xB1:  LDA_POII_Y(); break;
 		//case 0xB4:  LDY_ZINX(); break;
 		//case 0xB5:  LDA_ZINX(); break;
@@ -162,7 +162,7 @@
 		//case 0xCA:  DEX(); break;
 		//case 0xCC:  CPY_ABS(); break;
 		//case 0xCD:  CMP_ABS(); break;
-		//case 0xD0:  BNE(); break;
+		case 0xD0:  BNE(); break;
 		//case 0xD1:  CMP_POII(); break;
 		//case 0xD5:  CMP_ZINX(); break;
 		//case 0xD6:  DEC_ZINX(); break;
@@ -181,7 +181,7 @@
 		//case 0xEC:  CPX_ABS(); break;
 		//case 0xED:  SBC_ABS(); break;
 		//case 0xEE:  INC_ABS(); break;
-		//case 0xF0:  BEQ(); break;
+		case 0xF0:  BEQ(); break;
 		//case 0xF1:  SBC_POII(); break;
 		//case 0xF5:  SBC_ZINX(); break;
 		//case 0xF6:  INC_ZINX(); break;
@@ -389,5 +389,128 @@
 		//opcode 0x1E 3 bytes long
 		BaseASL(3, GetPointerToDataInCPUMemoryUsing_INX_X_MODE());
 	}
+	////////////////  END    ///////////////
 
+	/////////   BRANCH FAMILY INSTRUCTIONS 
+	CPU::BaseBranchReturnType CPU::BaseBranch() {
+		uint8_t SignedOperand = *GetPointerToDataInCPUMemoryUsing_IME_MODE(); //this jump value is signed
+		bool Sign = GetSignFromData(&SignedOperand);
+		uint8_t UnSignedOperand = SignedOperand & 0b01111111;//we mask the 7th bit to get the decimal value without a sign
+		return { Sign , UnSignedOperand };
+	}
+	void CPU::BCC() {
+		//opcode 0x90 2bytes
+		//THE DOC FOR RELATIVE ADDRESSING IS CONTRADICTING THE DOC FOR PROGRAM COUNTER
+		//IN THAT PC POINTS TO CURRENT INSTRUCTION BEING EXECUTED(which is used now) AND POINTING TO NEXT INSTRUCTION TO BE
+		//EXECUTED
+		CPU::BaseBranchReturnType BranchData = BaseBranch();
+		
+		if (GetCarry() == false)
+		{
+			if (BranchData.Sign) { PC = PC - BranchData.UnSignedOperand; }
+			else { PC = PC + BranchData.UnSignedOperand; }
+		}
+
+		else { PC = PC + 2; }
+
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::BCS() {
+		//opcode 0xB0 2 BYTES LONG
+		CPU::BaseBranchReturnType BranchData = BaseBranch();
+
+		if (GetCarry() == true)
+		{
+			if (BranchData.Sign) { PC = PC - BranchData.UnSignedOperand; }
+			else { PC = PC + BranchData.UnSignedOperand; }
+		}
+
+		else { PC = PC + 2; }
+
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::BEQ() {
+		//opcode 0xF0 2 BYTES LONG
+		CPU::BaseBranchReturnType BranchData = BaseBranch();
+
+		if (GetZero() == true)
+		{
+			if (BranchData.Sign) { PC = PC - BranchData.UnSignedOperand; }
+			else { PC = PC + BranchData.UnSignedOperand; }
+		}
+
+		else { PC = PC + 2; }
+
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::BMI() {
+		//opcode 0x30 2 BYTES LONG
+		CPU::BaseBranchReturnType BranchData = BaseBranch();
+
+		if (GetSign() == true)
+		{
+			if (BranchData.Sign) { PC = PC - BranchData.UnSignedOperand; }
+			else { PC = PC + BranchData.UnSignedOperand; }
+		}
+
+		else { PC = PC + 2; }
+
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::BNE() {
+		//opcode 0xD0 2 BYTES LONG
+		CPU::BaseBranchReturnType BranchData = BaseBranch();
+
+		if (GetZero() == false)
+		{
+			if (BranchData.Sign) { PC = PC - BranchData.UnSignedOperand; }
+			else { PC = PC + BranchData.UnSignedOperand; }
+		}
+
+		else { PC = PC + 2; }
+
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::BPL() {
+		//opcode 0x10 2 BYTES LONG
+		CPU::BaseBranchReturnType BranchData = BaseBranch();
+
+		if (GetSign() == false)
+		{
+			if (BranchData.Sign) { PC = PC - BranchData.UnSignedOperand; }
+			else { PC = PC + BranchData.UnSignedOperand; }
+		}
+
+		else { PC = PC + 2; }
+
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::BVC() {
+		//opcode 0x50 2 BYTES LONG
+		CPU::BaseBranchReturnType BranchData = BaseBranch();
+
+		if (GetOverflow() == false)
+		{
+			if (BranchData.Sign) { PC = PC - BranchData.UnSignedOperand; }
+			else { PC = PC + BranchData.UnSignedOperand; }
+		}
+
+		else { PC = PC + 2; }
+
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::BVS() {
+		//opcode 0x70 2 BYTES LONG
+		CPU::BaseBranchReturnType BranchData = BaseBranch();
+
+		if (GetOverflow() == true)
+		{
+			if (BranchData.Sign) { PC = PC - BranchData.UnSignedOperand; }
+			else { PC = PC + BranchData.UnSignedOperand; }
+		}
+
+		else { PC = PC + 2; }
+
+		FinishedExecutingCurrentInsctruction = true;
+	}
 	////////////////  END    ///////////////
