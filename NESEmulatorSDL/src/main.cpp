@@ -21,7 +21,7 @@
     int main(int argc, char* argv[])
     {
         InitLogger();
-        CPUMemory = CreateMainMemory();
+        CPUMemory = CreateCPUMemory();
         PPUMemory= CreatePPUMemory();
         LoadRom(Logger, Rom);
         IOCore IOCore(Logger);

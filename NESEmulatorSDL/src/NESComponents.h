@@ -40,33 +40,33 @@ void LoadRom(std::shared_ptr<spdlog::logger> Logger, std::vector<uint8_t>* Rom) 
     LOG_INFO("Loading rom ended ");
 }
 
-uint8_t** CreateMainMemory() {
-    uint8_t** OriginalMainMemory = new uint8_t * [0x10000];
+uint8_t** CreateCPUMemory() {
+    uint8_t** OriginalCPUMemory = new uint8_t * [0x10000];
     //max address     foldbackregion1     foldbackregion2 = 0xC808
     //    ^                  ^                   ^
-    uint8_t* TimmedMemoryMap = new uint8_t[0x10000 - (0x2000 - 0x0800) - (0x4000 - 0x2008)];//size is 0xC808
+    uint8_t* TimmedCPUMemory = new uint8_t[0x10000 - (0x2000 - 0x0800) - (0x4000 - 0x2008)];//size is 0xC808
 
     for (int i = 0x0000; i < 0x2000; i = i + 0x800) {
         for (int j = 0; j < 0x0800; j++) {
-            OriginalMainMemory[i + j] = &TimmedMemoryMap[0x0000 + j];
+            OriginalCPUMemory[i + j] = &TimmedCPUMemory[0x0000 + j];
         }
     }
 
 
     for (int i = 0x2000; i < 0x4000; i = i + 8) {
         for (int j = 0; j < 8; j++) {
-            OriginalMainMemory[i + j] = &TimmedMemoryMap[0x0800 + j];
+            OriginalCPUMemory[i + j] = &TimmedCPUMemory[0x0800 + j];
 
         }
     }
 
 
     for (int i = 0x4000; i < 0x10000; i++) {
-        OriginalMainMemory[i] = &TimmedMemoryMap[0x0808 + (i - 0x4000)];
+        OriginalCPUMemory[i] = &TimmedCPUMemory[0x0808 + (i - 0x4000)];
 
     }
 
-    return OriginalMainMemory;
+    return OriginalCPUMemory;
 
 }
 

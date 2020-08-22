@@ -92,7 +92,6 @@
     <ClInclude Include="src\CoreHeaders.h" />
     <ClInclude Include="src\CPU.h" />
     <ClInclude Include="src\Log.h" />
-    <ClInclude Include="src\Masks.h" />
     <ClInclude Include="src\NESComponents.h" />
     <ClInclude Include="src\IOCore.h" />
   </ItemGroup>
