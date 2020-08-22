@@ -356,8 +356,11 @@
 
 	/////////   AND_INSTRUCTIONS
 	void CPU::ASL_ACC() {
+		//opcode 0x0A 1byte long
 		if (GetAccumulatorSign()){SetCarry();}
 		else { ResetCarry();}
 		A = A << 1;
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
 	}
 	////////////////  END    ///////////////

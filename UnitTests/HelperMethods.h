@@ -3,6 +3,8 @@
 #include "../NESEmulatorSDL/src/NESComponents.h"
 #include "../NESEmulatorSDL/src/CPU.h"
 
+///Avoid working on folded regions of Memory
+
 CPU* CreateIME_Instruction(uint8_t InstructionOPcode, uint8_t ImmediateValue, uint8_t** OriginalMainMemory) {
 	OriginalMainMemory = CreateMainMemory();
 	CPU* aCPU = new CPU(NULL, OriginalMainMemory, NULL);

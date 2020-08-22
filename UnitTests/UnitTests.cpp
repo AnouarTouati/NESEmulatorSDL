@@ -639,6 +639,23 @@ namespace UnitTests
 		}
 	};
 
+	TEST_CLASS(ASL_INSTRUCTIONS) {
+		uint8_t** OriginalMainMemory;
 
+		TEST_METHOD(ASL_ACC) {
+			OriginalMainMemory = CreateMainMemory();
+			//TEST1
+			CPU* aCPU = new CPU(NULL, OriginalMainMemory, NULL);
+			*OriginalMainMemory[0x0000] = 0x0A;
+
+			Assert::IsFalse(aCPU->GetCarry());
+			aCPU->A = 0b10000000;
+			aCPU->ExecuteNextInstruction();
+			Assert::IsTrue(aCPU->GetCarry());
+			Assert::AreEqual(0x01, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		}
+	};
 	
 }
