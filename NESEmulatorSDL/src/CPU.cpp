@@ -38,7 +38,7 @@
 		//case 0x15: ORA_ZINX (); break;
 		case 0x16: ASL_ZINX (); break;
 		//
-		//case 0x18:  CLC_(); break;
+		case 0x18:  CLC(); break;
 		//case 0x19:  ORA_INX_Y(); break;
 		//
 		//case 0x1D:  ORA_INX_X(); break;
@@ -65,7 +65,7 @@
 		case 0x35:  AND_ZINX(); break;
 		//case 0x36:  ROL_ZINX(); break;
 		//
-		//case 0x38:  SEC(); break;
+		case 0x38:  SEC(); break;
 		case 0x39:  AND_INX_Y(); break;
 		//
 		case 0x3D:  AND_INX_X(); break;
@@ -84,7 +84,7 @@
 		//case 0x51:  EOR_POII(); break;
 		//case 0x55:  EOR_ZINX(); break;
 		//case 0x56:  LSR_ZINX(); break;
-		//case 0x58:  CLI(); break;
+		case 0x58:  CLI(); break;
 		//case 0x59:  EOR_INX_Y(); break;
 		//case 0x5D:  EOR_INX_X(); break;
 		//case 0x5E:  LSR_INX_X(); break;
@@ -107,7 +107,7 @@
 		//case 0x71:  ADC_POII(); break;
 		//case 0x75:  ADC_ZINX(); break;
 		//case 0x76:  ROR_ZINX(); break;
-		//case 0x78:  SEI(); break;
+		case 0x78:  SEI(); break;
 		//case 0x79:  ADC_INX_Y(); break;
 		//case 0x7D:  ADC_INX_X(); break;
 		//case 0x7E:  ROR_INX_X(); break;
@@ -146,7 +146,7 @@
 		//case 0xB4:  LDY_ZINX(); break;
 		//case 0xB5:  LDA_ZINX(); break;
 		//case 0xB6:  LDX_ZINY(); break;
-		//case 0xB8:  CLV(); break;
+		case 0xB8:  CLV(); break;
 		//case 0xB9:  LDA_INX_Y(); break;
 		//case 0xBA:  TSX(); break;
 		//case 0xBC:  LDY_INX_X(); break;
@@ -166,7 +166,7 @@
 		//case 0xD1:  CMP_POII(); break;
 		//case 0xD5:  CMP_ZINX(); break;
 		//case 0xD6:  DEC_ZINX(); break;
-		//case 0xD8:  CLD(); break;
+		case 0xD8:  CLD(); break;
 		//case 0xD9:  CMP_INX_Y(); break;
 		//case 0xDD:  CMP_INX_X(); break;
 		//case 0xDE:  DEC_INX_X(); break;
@@ -185,7 +185,7 @@
 		//case 0xF1:  SBC_POII(); break;
 		//case 0xF5:  SBC_ZINX(); break;
 		//case 0xF6:  INC_ZINX(); break;
-		//case 0xF8:  SED(); break;
+		case 0xF8:  SED(); break;
 		//case 0xF9:  SBC_INX_Y(); break;
 		//case 0xFD:  SBC_INX_X(); break;
 		//case 0xFE:  INC_INX_X(); break;
@@ -548,6 +548,52 @@
 		if (AndResult == 0) { SetZero(); }
 		else { ResetZero(); }
 		PC = PC + 2;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	////////////////  END    /////////////// 
+
+	/////////   OperationsOnFlags_INSTRUCTIONS
+	void CPU::CLC() {
+		//opcode 0x18 1 byte long
+		ResetCarry();
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::CLD() {
+		//opcode 0xD8 1 byte long
+		ResetDecimalMode();
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::CLI() {
+		//opcode 0x58 1 byte long
+		ResetInterruptDisable();
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::CLV() {
+		//opcode 0xB8 1 byte long
+		ResetOverflow();
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+
+	void CPU::SEC() {
+		//opcode 0x38 1 byte long
+		SetCarry();
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::SED() {
+		//opcode 0xF8 1 byte long
+		SetDecimalMode();
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::SEI() {
+		//opcode 0x78 1 byte long
+		SetInterruptDisbale();
+		PC = PC + 1;
 		FinishedExecutingCurrentInsctruction = true;
 	}
 	////////////////  END    /////////////// 

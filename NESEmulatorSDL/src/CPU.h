@@ -206,7 +206,7 @@
 		// void  ORA_POII();
 		// void ORA_ZINX();
 		 void ASL_ZINX();
-		// void  CLC_();
+		 void  CLC();
 		// void  ORA_INX_Y();
 		// void  ORA_INX_X();
 		 void  ASL_INX_X();
@@ -225,7 +225,7 @@
 		 void  AND_POII();
 		 void  AND_ZINX();
 		// void  ROL_ZINX();
-		// void  SEC();
+		 void  SEC();
 		 void  AND_INX_Y();
 		 void  AND_INX_X();
 		// void  ROL_INX_X();
@@ -243,7 +243,7 @@
 		// void  EOR_POII(); 
 		// void  EOR_ZINX(); 
 		// void  LSR_ZINX(); 
-		// void  CLI(); 
+		 void  CLI(); 
 		// void  EOR_INX_Y(); 
 		// void  EOR_INX_X(); 
 		// void  LSR_INX_X(); 
@@ -267,7 +267,7 @@
 		// void  ADC_POII(); 
 		// void  ADC_ZINX(); 
 		// void  ROR_ZINX(); 
-		// void  SEI(); 
+		 void  SEI(); 
 		// void  ADC_INX_Y(); 
 		// void  ADC_INX_X(); 
 		// void  ROR_INX_X(); 
@@ -306,7 +306,7 @@
 		// void  LDY_ZINX(); 
 		// void  LDA_ZINX(); 
 		// void  LDX_ZINY(); 
-		// void  CLV(); 
+		 void  CLV(); 
 		// void  LDA_INX_Y(); 
 		// void  TSX(); 
 		// void  LDY_INX_X(); 
@@ -326,7 +326,7 @@
 		// void  CMP_POII(); 
 		// void  CMP_ZINX(); 
 		// void  DEC_ZINX(); 
-		// void  CLD(); 
+		 void  CLD(); 
 		// void  CMP_INX_Y(); 
 		// void  CMP_INX_X(); 
 		// void  DEC_INX_X(); 
@@ -345,7 +345,7 @@
 		// void  SBC_POII(); 
 		// void  SBC_ZINX(); 
 		// void  INC_ZINX(); 
-		// void  SED(); 
+		 void  SED(); 
 		// void  SBC_INX_Y(); 
 		// void  SBC_INX_X(); 
 		// void  INC_INX_X(); 

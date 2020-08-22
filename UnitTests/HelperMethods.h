@@ -21,6 +21,7 @@ CPU* CreateIME_Instruction(uint8_t InstructionOPcode, uint8_t ImmediateValue) {
 	CPU* aCPU = new CPU(NULL, CPUMemory, NULL);
 	*CPUMemory[0x0000] = InstructionOPcode;
 	*CPUMemory[0x0001] = ImmediateValue;
+	aCPU->PC = 0x0000;
 
 	return aCPU;
 }
@@ -30,6 +31,7 @@ CPU* CreateZABS_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRe
 	*CPUMemory[0x0000] = InstructionOPcode;
 	*CPUMemory[0x0001] = 0xA0;
 	*CPUMemory[0x00A0] = ValueThatWillBeRetrievedOnExecution;
+	aCPU->PC = 0x0000;
 	return aCPU;
 }
 CPU* CreateZINX_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRetrievedOnExecution) {
@@ -39,6 +41,7 @@ CPU* CreateZINX_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRe
 	*CPUMemory[0x0001] = 0xA0;
 	aCPU->X = 0x01;
 	*CPUMemory[0x00A1] = ValueThatWillBeRetrievedOnExecution;
+	aCPU->PC = 0x0000;
 	return aCPU;
 }
 //ADDRESSING MODES TO GET OPERAND
@@ -49,6 +52,7 @@ CPU* CreateABS_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRet
 	*CPUMemory[0x0001] = 0xA0;
 	*CPUMemory[0x0002] = 0xB0;
 	*CPUMemory[0xB0A0] = ValueThatWillBeRetrievedOnExecution;
+	aCPU->PC = 0x0000;
 	return aCPU;
 }
 CPU* CreateINX_X_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRetrievedOnExecution) {
@@ -59,6 +63,7 @@ CPU* CreateINX_X_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeR
 	*CPUMemory[0x0002] = 0xB0;
 	aCPU->X = 0x01;
 	*CPUMemory[0xB0A1] = ValueThatWillBeRetrievedOnExecution;
+	aCPU->PC = 0x0000;
 	return aCPU;
 }
 CPU* CreateINX_Y_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRetrievedOnExecution) {
@@ -69,6 +74,7 @@ CPU* CreateINX_Y_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeR
 	*CPUMemory[0x0002] = 0xB0;
 	aCPU->Y = 0x01;
 	*CPUMemory[0xB0A1] = ValueThatWillBeRetrievedOnExecution;
+	aCPU->PC = 0x0000;
 	return aCPU;
 }
 CPU* CreatePRII_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRetrievedOnExecution) {
@@ -79,6 +85,7 @@ CPU* CreatePRII_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRe
 	aCPU->X = 0x01;
 	*CPUMemory[0xA1] = 0xF0;
 	*CPUMemory[0xF0] = ValueThatWillBeRetrievedOnExecution;
+	aCPU->PC = 0x0000;
 	return aCPU;
 }
 CPU* CreatePOII_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRetrievedOnExecution) {
@@ -91,13 +98,15 @@ CPU* CreatePOII_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRe
 	*CPUMemory[0x00A1] = 0xC0;
 	aCPU->Y = 0x01;
 	*CPUMemory[0xC0B1] = ValueThatWillBeRetrievedOnExecution;
+
+	aCPU->PC = 0x0000;
 	return aCPU;
 }
 CPU* CreateACC_Instruction(uint8_t InstructionOPcode) {
 	uint8_t** CPUMemory = CreateCPUMemory();
 	CPU* aCPU = new CPU(NULL, CPUMemory, NULL);
 	*CPUMemory[0x0000] = InstructionOPcode;
-	
+	aCPU->PC = 0x0000;
 	return aCPU;
 }
 //MISCELENIOUS
@@ -107,5 +116,13 @@ CPU* CreatBRANCH_FAMILY_Instruction(uint8_t InstructionOPcode, uint8_t Displacem
 	*CPUMemory[0x8000] = InstructionOPcode;
 	*CPUMemory[0x8001] =DisplacementValue;
 	aCPU->PC = 0x8000;
+	return aCPU;
+}
+
+CPU* CreatIMPLIED_Instruction(uint8_t InstructionOPcode) {
+	uint8_t** CPUMemory = CreateCPUMemory();
+	CPU* aCPU = new CPU(NULL, CPUMemory, NULL);
+	*CPUMemory[0x0000] = InstructionOPcode;
+	aCPU->PC = 0x0000;
 	return aCPU;
 }

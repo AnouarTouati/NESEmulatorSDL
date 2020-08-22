@@ -1263,4 +1263,64 @@ namespace UnitTests
 	}
 
 	};
+	TEST_CLASS(CLEAR_SET_FLAGS_INSTRUCTIONS) {
+	TEST_METHOD(CLEAR_FLAGS) {
+
+		CPU* aCPU;
+
+		//CLEAR CARRY
+		aCPU = CreatIMPLIED_Instruction(0x18);
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0001, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//CLEAR DECIMAL MODE
+		aCPU = CreatIMPLIED_Instruction(0xD8);
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetDecimalMode());
+		Assert::AreEqual(0x0001, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//CLEAR INTERRUPT DISBALE
+		aCPU = CreatIMPLIED_Instruction(0x58);
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetInterruptDisable());
+		Assert::AreEqual(0x0001, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//CLEAR OVERFLOW
+		aCPU = CreatIMPLIED_Instruction(0xB8);
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::AreEqual(0x0001, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+	}
+	TEST_METHOD(SET_FLAGS) {
+
+		CPU* aCPU;
+
+		//SET CARRY
+		aCPU = CreatIMPLIED_Instruction(0x38);
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0001, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//SET DECIMAL MODE
+		aCPU = CreatIMPLIED_Instruction(0xF8);
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetDecimalMode());
+		Assert::AreEqual(0x0001, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//SET INTERRUPT DISBALE
+		aCPU = CreatIMPLIED_Instruction(0x78);
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetInterruptDisable());
+		Assert::AreEqual(0x0001, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+	}
+	};
 }
