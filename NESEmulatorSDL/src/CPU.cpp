@@ -47,7 +47,7 @@
 		//case 0x20:  JSR(); break;
 		case 0x21:  AND_PRII(); break;
 		//
-		//case 0x24:  BIT_ZABS(); break;
+		case 0x24:  BIT_ZABS(); break;
 		case 0x25:  AND_ZABS(); break;
 		//case 0x26:  ROL_ZABS(); break;
 		//
@@ -55,7 +55,7 @@
 		case 0x29:  AND_IME(); break;
 		//case 0x2A:  ROL_ACC(); break;
 		//
-		//case 0x2C:  BIT_ABS(); break;
+		case 0x2C:  BIT_ABS(); break;
 		case 0x2D:  AND_ABS(); break;
 		//case 0x2E:  ROL_ABS(); break;
 		//
@@ -514,3 +514,40 @@
 		FinishedExecutingCurrentInsctruction = true;
 	}
 	////////////////  END    ///////////////
+
+	/////////   BIT_INSTRUCTIONS
+	void CPU::BIT_ABS() {
+		//opcode 0x2C 3 byte long
+		uint8_t AndResult = A & *GetPointerToDataInCPUMemoryUsing_ABS_MODE();
+		bool IsBit7Set = AndResult & 0b10000000;//bit7 aka M7 in docs
+		bool IsBit6Set = AndResult & 0b01000000;//bit6 aka M6 in docs
+
+		if (IsBit7Set) { SetSign();}
+		else { ResetSign(); }
+
+		if (IsBit6Set) { SetOverflow(); }
+		else { ResetOverflow(); }
+
+		if (AndResult == 0) { SetZero(); }
+		else { ResetZero(); }
+		PC = PC + 3;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::BIT_ZABS() {
+		//opcode 0x24 2 byte long
+		uint8_t AndResult = A & *GetPointerToDataInCPUMemoryUsing_ZABS_MODE();
+		bool IsBit7Set = AndResult & 0b10000000;//bit7 aka M7 in docs
+		bool IsBit6Set = AndResult & 0b01000000;//bit6 aka M6 in docs
+
+		if (IsBit7Set) { SetSign(); }
+		else { ResetSign(); }
+
+		if (IsBit6Set) { SetOverflow(); }
+		else { ResetOverflow(); }
+
+		if (AndResult == 0) { SetZero(); }
+		else { ResetZero(); }
+		PC = PC + 2;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	////////////////  END    /////////////// 

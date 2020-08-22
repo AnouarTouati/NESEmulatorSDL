@@ -251,7 +251,6 @@ namespace UnitTests
 		}
 		*/
 	};
-
 	TEST_CLASS(AND_INSTRUCTIONS) {
 	public :
 		
@@ -638,7 +637,6 @@ namespace UnitTests
 			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
 		}
 	};
-
 	TEST_CLASS(ASL_INSTRUCTIONS) {
 		
 
@@ -1132,5 +1130,137 @@ namespace UnitTests
 			Assert::AreEqual(0x8002, (int)aCPU->PC);
 		}
 	};
-	
+	TEST_CLASS(BIT_INSTRUCTIONS) {
+	TEST_METHOD(BIT_ABS) {
+			uint8_t OPCode = 0x2C;
+			uint8_t InstructionLength = 0x03;
+			CPU* aCPU;
+
+			//TEST1
+			aCPU = CreateABS_Instruction(OPCode, 0b00000000);
+			aCPU->A = 0b11000000;
+			aCPU->ExecuteNextInstruction();
+			Assert::IsTrue(aCPU->GetZero());
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetOverflow());
+			Assert::AreEqual(0x0000+ InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST2
+			aCPU = CreateABS_Instruction(OPCode, 0b10000000);
+			aCPU->A = 0b11000000;
+			aCPU->ExecuteNextInstruction();
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetOverflow());
+			Assert::AreEqual(0x0000+ InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST3
+			aCPU = CreateABS_Instruction(OPCode, 0b01000000);
+			aCPU->A = 0b11000000;
+			aCPU->ExecuteNextInstruction();
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsTrue(aCPU->GetOverflow());
+			Assert::AreEqual(0x0000+ InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST4
+			aCPU = CreateABS_Instruction(OPCode, 0b11000000);
+			aCPU->A = 0b11000000;
+			aCPU->ExecuteNextInstruction();
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsTrue(aCPU->GetOverflow());
+			Assert::AreEqual(0x0000+ InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST4
+			aCPU = CreateABS_Instruction(OPCode, 0b00000001);
+			aCPU->A = 0b11000000;
+			aCPU->ExecuteNextInstruction();
+			Assert::IsTrue(aCPU->GetZero());
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetOverflow());
+			Assert::AreEqual(0x0000+ InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+			//TEST5
+			aCPU = CreateABS_Instruction(OPCode, 0b00000001);
+			aCPU->A = 0b11000001;
+			aCPU->ExecuteNextInstruction();
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::IsFalse(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetOverflow());
+			Assert::AreEqual(0x0000+ InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+	TEST_METHOD(BIT_ZABS) {
+		uint8_t OPCode = 0x24;
+		uint8_t InstructionLength = 0x02;
+		CPU* aCPU;
+
+		//TEST1
+		aCPU = CreateZABS_Instruction(OPCode, 0b00000000);
+		aCPU->A = 0b11000000;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetZero());
+		Assert::IsFalse(aCPU->GetSign());
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::AreEqual(0x0000+ InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreateZABS_Instruction(OPCode, 0b10000000);
+		aCPU->A = 0b11000000;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetZero());
+		Assert::IsTrue(aCPU->GetSign());
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::AreEqual(0x0000+ InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST3
+		aCPU = CreateZABS_Instruction(OPCode, 0b01000000);
+		aCPU->A = 0b11000000;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetZero());
+		Assert::IsFalse(aCPU->GetSign());
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::AreEqual(0x0000+ InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST4
+		aCPU = CreateZABS_Instruction(OPCode, 0b11000000);
+		aCPU->A = 0b11000000;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetZero());
+		Assert::IsTrue(aCPU->GetSign());
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::AreEqual(0x0000+ InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST4
+		aCPU = CreateZABS_Instruction(OPCode, 0b00000001);
+		aCPU->A = 0b11000000;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetZero());
+		Assert::IsFalse(aCPU->GetSign());
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::AreEqual(0x0000+ InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST5
+		aCPU = CreateZABS_Instruction(OPCode, 0b00000001);
+		aCPU->A = 0b11000001;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetZero());
+		Assert::IsFalse(aCPU->GetSign());
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::AreEqual(0x0000+ InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+	}
+
+	};
 }

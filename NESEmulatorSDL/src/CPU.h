@@ -212,13 +212,13 @@
 		 void  ASL_INX_X();
 		// void  JSR();
 		 void  AND_PRII();
-		// void  BIT_ZABS();
+		 void  BIT_ZABS();
 		 void  AND_ZABS();
 		// void  ROL_ZABS();
 		// void  PLP();
 		 void  AND_IME();
 		// void  ROL_ACC();
-		// void  BIT_ABS();
+		 void  BIT_ABS();
 		 void  AND_ABS();
 		// void  ROL_ABS();
 		 void  BMI();
