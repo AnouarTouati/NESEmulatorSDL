@@ -197,15 +197,15 @@
 		// void   ORA_IME();
 		 void  ASL_ACC();
 		// void  ORA_ABS();
-		// void  ASL_ABS();
+		 void  ASL_ABS();
 		// void  BPL();
 		// void  ORA_POII();
 		// void ORA_ZINX();
-		// void ASL_ZINX();
+		 void ASL_ZINX();
 		// void  CLC_();
 		// void  ORA_INX_Y();
 		// void  ORA_INX_X();
-		// void  ASL_INX_X();
+		 void  ASL_INX_X();
 		// void  JSR();
 		 void  AND_PRII();
 		// void  BIT_ZABS();

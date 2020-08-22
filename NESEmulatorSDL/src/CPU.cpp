@@ -30,19 +30,19 @@
 		case 0x0A:  ASL_ACC(); break;
 		//
 		//case 0x0D:  ORA_ABS(); break;
-		//case 0x0E:  ASL_ABS(); break;
+		case 0x0E:  ASL_ABS(); break;
 		//
 		//case 0x10:  BPL(); break;
 		//case 0x11:  ORA_POII(); break;
 		//
 		//case 0x15: ORA_ZINX (); break;
-		//case 0x16: ASL_ZINX (); break;
+		case 0x16: ASL_ZINX (); break;
 		//
 		//case 0x18:  CLC_(); break;
 		//case 0x19:  ORA_INX_Y(); break;
 		//
 		//case 0x1D:  ORA_INX_X(); break;
-		//case 0x1E:  ASL_INX_X(); break;
+		case 0x1E:  ASL_INX_X(); break;
 		//
 		//case 0x20:  JSR(); break;
 		case 0x21:  AND_PRII(); break;
@@ -354,7 +354,7 @@
 	}
 	////////////////  END    ///////////////
 
-	/////////   AND_INSTRUCTIONS
+	/////////   ASL_INSTRUCTIONS
 	void CPU::BaseASL(uint8_t InstructionLength,uint8_t* DataThaWillBeAltered) {
 		if (GetSignFromData(DataThaWillBeAltered)) { SetCarry(); }
 		else { ResetCarry(); }
@@ -377,4 +377,17 @@
 		//opcode 0x06 2bytes long
 		BaseASL(2, GetPointerToDataInCPUMemoryUsing_ZABS_MODE());
 	}
+	void CPU::ASL_ZINX() {
+		//opcode 0x16 2 bytes long
+		BaseASL(2, GetPointerToDataInCPUMemoryUsing_ZINX_MODE());
+	}
+	void CPU::ASL_ABS() {
+		//opcode 0x0E 3 bytes long
+		BaseASL(3, GetPointerToDataInCPUMemoryUsing_ABS_MODE());
+	}
+	void CPU::ASL_INX_X() {
+		//opcode 0x1E 3 bytes long
+		BaseASL(3, GetPointerToDataInCPUMemoryUsing_INX_X_MODE());
+	}
+
 	////////////////  END    ///////////////
