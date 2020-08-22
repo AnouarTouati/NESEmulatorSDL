@@ -66,8 +66,8 @@
 			ActualAddress = ActualAddress | Lower;
 			return ActualAddress;
 		}
-		bool GetAccumulatorSign() {
-			if (A & 0b10000000) {
+		bool GetSignFromData(const uint8_t* TargetData) {
+			if (*TargetData & 0b10000000) {
 				return true;
 			}
 			else {
@@ -184,7 +184,7 @@
 
 
 		void BaseAND(uint8_t InstructionLength);
-
+		void BaseASL(uint8_t InstructionLength,uint8_t* DataThaWillBeAltered);
 
 
 
@@ -192,7 +192,7 @@
 		// void BRK(); 
 		// void  ORA_PRII(); 
 		// void  ORA_ZABS(); 
-		// void   ASL_ZABS();
+		 void   ASL_ZABS();
 		// void   PHP();
 		// void   ORA_IME();
 		 void  ASL_ACC();

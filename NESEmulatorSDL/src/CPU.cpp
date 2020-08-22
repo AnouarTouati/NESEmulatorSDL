@@ -23,7 +23,7 @@
 		//case 0x01:  ORA_PRII(); break;
 		//
 		//case 0x05:  ORA_ZABS(); break;
-		//case 0x06:  ASL_ZABS(); break;
+		case 0x06:  ASL_ZABS(); break;
 		//
 		//case 0x08:  PHP(); break;
 		//case 0x09:  ORA_IME(); break;
@@ -287,7 +287,7 @@
 		else { ResetZero(); }
 
 		//this wont work we are using unsigned unit8_t
-		if (GetAccumulatorSign()) { SetSign(); }//set N(S) sign flag to 1 if negative
+		if (GetSignFromData(&A)) { SetSign(); }//set N(S) sign flag to 1 if negative
 		else{  ResetSign(); }
 
 		if (ThereIsCarry) { SetCarry(); }
@@ -303,7 +303,7 @@
 		if (A == 0) { SetZero(); }
 		else { ResetZero(); }
 
-		if (GetAccumulatorSign()) { SetSign(); }
+		if (GetSignFromData(&A)) { SetSign(); }
 		else { ResetSign(); }
 
 		PC = PC + InstructionLength;
@@ -355,12 +355,26 @@
 	////////////////  END    ///////////////
 
 	/////////   AND_INSTRUCTIONS
+	void CPU::BaseASL(uint8_t InstructionLength,uint8_t* DataThaWillBeAltered) {
+		if (GetSignFromData(DataThaWillBeAltered)) { SetCarry(); }
+		else { ResetCarry(); }
+
+		*DataThaWillBeAltered = *DataThaWillBeAltered << 1;
+
+		if (*DataThaWillBeAltered == 0) { SetZero(); }
+		else { ResetZero(); }
+		if (GetSignFromData(DataThaWillBeAltered)) { SetSign(); }
+		else { ResetSign(); }
+
+		PC = PC + InstructionLength;
+		FinishedExecutingCurrentInsctruction = true;
+	}
 	void CPU::ASL_ACC() {
 		//opcode 0x0A 1byte long
-		if (GetAccumulatorSign()){SetCarry();}
-		else { ResetCarry();}
-		A = A << 1;
-		PC = PC + 1;
-		FinishedExecutingCurrentInsctruction = true;
+		BaseASL(1, &A);
+	}
+	void CPU::ASL_ZABS() {
+		//opcode 0x06 2bytes long
+		BaseASL(2, GetPointerToDataInCPUMemoryUsing_ZABS_MODE());
 	}
 	////////////////  END    ///////////////
