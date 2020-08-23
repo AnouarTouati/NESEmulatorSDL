@@ -1626,7 +1626,7 @@ namespace UnitTests
 		}
 	};
 	TEST_CLASS(STX_INSTRUCTIONS) {
-		TEST_METHOD(STA_ZABS) {
+		TEST_METHOD(STX_ZABS) {
 			uint8_t OPCode = 0x86;
 			uint8_t InstructionLength = 0x02;
 			CPU* aCPU;
@@ -1638,7 +1638,7 @@ namespace UnitTests
 			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
 			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
 		}
-		TEST_METHOD(STA_ZINY) {
+		TEST_METHOD(STX_ZINY) {
 			uint8_t OPCode = 0x96;
 			uint8_t InstructionLength = 0x02;
 			CPU* aCPU;
@@ -1650,13 +1650,51 @@ namespace UnitTests
 			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
 			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
 		}
-		TEST_METHOD(STA_ABS) {
+		TEST_METHOD(STX_ABS) {
 			uint8_t OPCode = 0x8E;
 			uint8_t InstructionLength = 0x03;
 			CPU* aCPU;
 
 			aCPU = CreateABS_Instruction(OPCode, 0x12/*A Random number*/);
 			aCPU->X = 0x45;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x45, (int)*aCPU->CPUMemory[TargetDataAddress_ABS_MODE]);
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+	};
+	TEST_CLASS(STY_INSTRUCTIONS) {
+		TEST_METHOD(STY_ZABS) {
+			uint8_t OPCode = 0x84;
+			uint8_t InstructionLength = 0x02;
+			CPU* aCPU;
+
+			aCPU = CreateZABS_Instruction(OPCode, 0x12/*A Random number*/);
+			aCPU->Y = 0x45;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x45, (int)*aCPU->CPUMemory[TargetDataAddress_ZABS_MODE]);
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(STY_ZINX) {
+			uint8_t OPCode = 0x94;
+			uint8_t InstructionLength = 0x02;
+			CPU* aCPU;
+
+			aCPU = CreateZINX_Instruction(OPCode, 0x12/*A Random number*/);
+			aCPU->Y = 0x45;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x45, (int)*aCPU->CPUMemory[TargetDataAddress_ZINX_MODE]);
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(STY_ABS) {
+			uint8_t OPCode = 0x8C;
+			uint8_t InstructionLength = 0x03;
+			CPU* aCPU;
+
+			aCPU = CreateABS_Instruction(OPCode, 0x12/*A Random number*/);
+			aCPU->Y = 0x45;
 			aCPU->ExecuteNextInstruction();
 			Assert::AreEqual(0x45, (int)*aCPU->CPUMemory[TargetDataAddress_ABS_MODE]);
 			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);

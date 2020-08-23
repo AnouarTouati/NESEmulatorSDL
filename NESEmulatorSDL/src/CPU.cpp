@@ -112,17 +112,17 @@
 		//case 0x7D:  ADC_INX_X(); break;
 		//case 0x7E:  ROR_INX_X(); break;
 		case 0x81:  STA_PRII(); break;
-		//case 0x84:  STY_ZABS(); break;
+		case 0x84:  STY_ZABS(); break;
 		case 0x85:  STA_ZABS(); break;
 		case 0x86:  STX_ZABS(); break;
 		//case 0x88:  DEY(); break;
 		case 0x8A:  TXA(); break;
-		//case 0x8C:  STY_ABS(); break;
+		case 0x8C:  STY_ABS(); break;
 		case 0x8D:  STA_ABS(); break;
 		case 0x8E:  STX_ABS(); break;
 		case 0x90:  BCC(); break;
 		case 0x91:  STA_POII(); break;
-		//case 0x94:  STY_ZINX(); break;
+		case 0x94:  STY_ZINX(); break;
 		case 0x95:  STA_ZINX(); break;
 		case 0x96:  STX_ZINY(); break;
 		case 0x98:  TYA(); break;
@@ -723,6 +723,27 @@
 	void CPU::STX_ABS() {
 		//opcode 0x8E 3 bytes long
 		*GetPointerToDataInCPUMemoryUsing_ABS_MODE() = X;
+		PC = PC + 3;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	////////////////  END    /////////////// 
+
+	/////////   STY INSTRUCTIONS 
+	void CPU::STY_ZABS() {
+		//opcode 0x84 2 bytes long
+		*GetPointerToDataInCPUMemoryUsing_ZABS_MODE() = Y;
+		PC = PC + 2;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::STY_ZINX() {
+		//opcode 0x94 2 bytes long
+		*GetPointerToDataInCPUMemoryUsing_ZINX_MODE() = Y;
+		PC = PC + 2;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::STY_ABS() {
+		//opcode 0x8C 3 bytes long
+		*GetPointerToDataInCPUMemoryUsing_ABS_MODE() = Y;
 		PC = PC + 3;
 		FinishedExecutingCurrentInsctruction = true;
 	}
