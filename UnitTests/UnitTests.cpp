@@ -1701,4 +1701,83 @@ namespace UnitTests
 			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
 		}
 	};
+	TEST_CLASS(OPERATIONS_WITH_STACK_INSTRUCTIONS) {
+	
+		/// //////////////////////////////
+		TEST_METHOD(RTS) {
+			uint8_t OPCode = 0x60;
+
+			CPU* aCPU;
+
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->PC = 0xFFBA;
+			aCPU->PushPCtoStack();
+			aCPU->PC = 0x0000;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0xFFBB, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(RTI) {
+			uint8_t OPCode = 0x40;
+
+			CPU* aCPU;
+
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->PC = 0xFFBA;
+			aCPU->PushPCtoStack();
+			aCPU->PC = 0x0000;
+			aCPU->PushToStack(0x16);//0x16 is a Status Register content example
+
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0xFFBA, (int)aCPU->PC);
+			Assert::AreEqual(0x16, (int)aCPU->P);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		//////////////////////////////////
+		TEST_METHOD(PLP) {
+			uint8_t OPCode = 0x28;
+			CPU* aCPU;
+
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->PushToStack(0x16);
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x16, (int)aCPU->P);
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(PLA) {
+			uint8_t OPCode = 0x68;
+			CPU* aCPU;
+
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->PushToStack(0x16);
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x16, (int)aCPU->A);
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(PHP) {
+			uint8_t OPCode = 0x08;
+			CPU* aCPU;
+
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->P = 0x16;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x16, (int)aCPU->PopStack());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(PHA) {
+			uint8_t OPCode = 0x48;
+			CPU* aCPU;
+
+			aCPU = CreatIMPLIED_Instruction(OPCode);
+			aCPU->A = 0x16;
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0x16, (int)aCPU->PopStack());
+			Assert::AreEqual(0x0001, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		
+	};
 }

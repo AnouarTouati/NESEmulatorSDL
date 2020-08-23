@@ -69,6 +69,29 @@
 			ActualAddress = ActualAddress | Lower;
 			return ActualAddress;
 		}
+		void PushToStack(uint8_t data) {
+			*CPUMemory[SP] = data;
+			SP--;
+		}
+		uint8_t PopStack() {
+			SP++;
+			return *CPUMemory[SP];
+		}
+		uint16_t PopPCfromStack() {
+			uint8_t Upper = PopStack();
+			uint8_t Lower = PopStack();
+			uint16_t PC = Upper;
+			PC = PC << 8;
+			PC = PC | Lower;
+			return PC;
+		}
+		void PushPCtoStack() {
+			uint8_t Upper = (PC & 0xFF00)>>8;
+			uint8_t Lower = PC & 0x00FF;
+			uint16_t PC = Upper;
+			PushToStack(Lower);
+			PushToStack(Upper);
+		}
 		bool GetSignFromData(const uint8_t* TargetData) {
 			if (*TargetData & 0b10000000) {
 				return true;
@@ -200,7 +223,7 @@
 		// void  ORA_PRII(); 
 		// void  ORA_ZABS(); 
 		 void   ASL_ZABS();
-		// void   PHP();
+		 void   PHP();
 		// void   ORA_IME();
 		 void  ASL_ACC();
 		// void  ORA_ABS();
@@ -218,7 +241,7 @@
 		 void  BIT_ZABS();
 		 void  AND_ZABS();
 		// void  ROL_ZABS();
-		// void  PLP();
+		 void  PLP();
 		 void  AND_IME();
 		// void  ROL_ACC();
 		 void  BIT_ABS();
@@ -232,11 +255,11 @@
 		 void  AND_INX_Y();
 		 void  AND_INX_X();
 		// void  ROL_INX_X();
-		// void  RTI();
+		 void  RTI();
 		// void  EOR_PRII();
 		// void  EOR_ZABS();
 		// void  LSR_ZABS(); 
-		// void  PHA(); 
+		 void  PHA(); 
 		// void  EOR_IME(); 
 		// void  LSR_ACC(); 
 		// void  JMP_ABS(); 
@@ -250,11 +273,11 @@
 		// void  EOR_INX_Y(); 
 		// void  EOR_INX_X(); 
 		// void  LSR_INX_X(); 
-		// void  RTS(); 
+		 void  RTS(); 
 		// void  ADC_PRII(); 
 		// void  ADC_ZABS(); 
 		// void  ROR_ZABS(); 
-		// void  PLA(); 
+		 void  PLA(); 
 		//
 		//
 		//

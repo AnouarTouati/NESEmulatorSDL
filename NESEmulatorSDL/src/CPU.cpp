@@ -25,7 +25,7 @@
 		//case 0x05:  ORA_ZABS(); break;
 		case 0x06:  ASL_ZABS(); break;
 		//
-		//case 0x08:  PHP(); break;
+		case 0x08:  PHP(); break;
 		//case 0x09:  ORA_IME(); break;
 		case 0x0A:  ASL_ACC(); break;
 		//
@@ -51,7 +51,7 @@
 		case 0x25:  AND_ZABS(); break;
 		//case 0x26:  ROL_ZABS(); break;
 		//
-		//case 0x28:  PLP(); break;
+		case 0x28:  PLP(); break;
 		case 0x29:  AND_IME(); break;
 		//case 0x2A:  ROL_ACC(); break;
 		//
@@ -70,11 +70,11 @@
 		//
 		case 0x3D:  AND_INX_X(); break;
 		//case 0x3E:  ROL_INX_X(); break;
-		//case 0x40:  RTI(); break;
+		case 0x40:  RTI(); break;
 		//case 0x41:  EOR_PRII(); break;
 		//case 0x45:  EOR_ZABS(); break;
 		//case 0x46:  LSR_ZABS(); break;
-		//case 0x48:  PHA(); break;
+		case 0x48:  PHA(); break;
 		//case 0x49:  EOR_IME(); break;
 		//case 0x4A:  LSR_ACC(); break;
 		//case 0x4C:  JMP_ABS(); break;
@@ -88,11 +88,11 @@
 		//case 0x59:  EOR_INX_Y(); break;
 		//case 0x5D:  EOR_INX_X(); break;
 		//case 0x5E:  LSR_INX_X(); break;
-		//case 0x60:  RTS(); break;
+		case 0x60:  RTS(); break;
 		//case 0x61:  ADC_PRII(); break;
 		//case 0x65:  ADC_ZABS(); break;
 		//case 0x66:  ROR_ZABS(); break;
-		//case 0x68:  PLA(); break;
+		case 0x68:  PLA(); break;
 		//
 		//
 		case 0x69:  ADC_IME(); break;
@@ -747,4 +747,46 @@
 		PC = PC + 3;
 		FinishedExecutingCurrentInsctruction = true;
 	}
+	////////////////  END    /////////////// 
+
+	/////////   OPERATIONS WITH STACK INSTRUCTIONS 
+	   //NOTE: JSR of JUMP_INSTRUCTIONS also uses the stack
+	/// ////////////////////////////
+	void CPU::RTS() {
+		//opcode 0x60 1 byte long
+		PC = PopPCfromStack() + 0x01;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::RTI() {
+		//opcode 0x40 1 byte long
+		P = PopStack();
+		PC = PopPCfromStack();
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	///////////////////////////////
+	void CPU::PLP() {
+		//opcode 0x28 1 BYTE LONG
+		P = PopStack();
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::PLA() {
+		//opcode 0x68 1 BYTELONG
+		A = PopStack();
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::PHP() {
+		//opcode 0x08 1 BYTELONG
+		PushToStack(P);
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::PHA() {
+		//opcode 0x48 1 BYTELONG
+		PushToStack(A);
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+
 	////////////////  END    /////////////// 
