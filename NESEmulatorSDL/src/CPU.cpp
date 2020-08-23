@@ -131,27 +131,27 @@
 		case 0x9D:  STA_INX_X(); break;
 		case 0xA0:  LDY_IME(); break;
 		//case 0xA1:  LDA_PRII(); break;
-		//case 0xA2:  LDX_IME(); break;
+	    case 0xA2:  LDX_IME(); break;
 		case 0xA4:  LDY_ZABS(); break;
 		//case 0xA5:  LDA_ZABS(); break;
-		//case 0xA6:  LDX_ZABS(); break;
+		case 0xA6:  LDX_ZABS(); break;
 		case 0xA8:  TAY(); break;
 		//case 0xA9:  LDA_IME(); break;
 		case 0xAA:  TAX(); break;
 		case 0xAC:  LDY_ABS(); break;
 		//case 0xAD:  LDA_ABS(); break;
-		//case 0xAE:  LDX_ABS(); break;
+		case 0xAE:  LDX_ABS(); break;
 		case 0xB0:  BCS(); break;
 		//case 0xB1:  LDA_POII_Y(); break;
 		case 0xB4:  LDY_ZINX(); break;
 		//case 0xB5:  LDA_ZINX(); break;
-		//case 0xB6:  LDX_ZINY(); break;
+		case 0xB6:  LDX_ZINY(); break;
 		case 0xB8:  CLV(); break;
 		//case 0xB9:  LDA_INX_Y(); break;
 		case 0xBA:  TSX(); break;
 		case 0xBC:  LDY_INX_X(); break;
 		//case 0xBD:  LDA_INX_X(); break;
-		//case 0xBE:  LDX_INX_Y(); break;
+		case 0xBE:  LDX_INX_Y(); break;
 		//case 0xC0:  CPY_IME(); break;
 		//case 0xC1:  CMP_PRII(); break;
 		//case 0xC4:  CPY_ZABS(); break;
@@ -872,5 +872,33 @@
 		//opcode 0xBC 3 bytes long
 		Y=*GetPointerToDataInCPUMemoryUsing_INX_X_MODE();
 		BaseSZCheck(3, Y);
+	}
+	////////////////  END    /////////////// 
+
+	/////////   LDX INSTRUCTIONS 
+	void CPU::LDX_IME() {
+		//opcode 0xA2 2 bytes long
+		X = *GetPointerToDataInCPUMemoryUsing_IME_MODE();
+		BaseSZCheck(2, X);
+	}
+	void CPU::LDX_ZABS() {
+		//opcode 0xA6 2 bytes long
+		 X= *GetPointerToDataInCPUMemoryUsing_ZABS_MODE();
+		BaseSZCheck(2, X);
+	}
+	void CPU::LDX_ZINY() {
+		//opcode 0xB6 2 bytes long
+		X = *GetPointerToDataInCPUMemoryUsing_ZINY_MODE();
+		BaseSZCheck(2, X);
+	}
+	void CPU::LDX_ABS() {
+		//opcode 0xAE 3 bytes long
+		X = *GetPointerToDataInCPUMemoryUsing_ABS_MODE();
+		BaseSZCheck(3, X);
+	}
+	void CPU::LDX_INX_Y() {
+		//opcode 0xBE 3 bytes long
+		X = *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE();
+		BaseSZCheck(3, X);
 	}
 	////////////////  END    /////////////// 
