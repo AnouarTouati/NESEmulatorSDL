@@ -130,27 +130,27 @@
 		case 0x9A:  TXS(); break;
 		case 0x9D:  STA_INX_X(); break;
 		case 0xA0:  LDY_IME(); break;
-		//case 0xA1:  LDA_PRII(); break;
+		case 0xA1:  LDA_PRII(); break;
 	    case 0xA2:  LDX_IME(); break;
 		case 0xA4:  LDY_ZABS(); break;
-		//case 0xA5:  LDA_ZABS(); break;
+		case 0xA5:  LDA_ZABS(); break;
 		case 0xA6:  LDX_ZABS(); break;
 		case 0xA8:  TAY(); break;
-		//case 0xA9:  LDA_IME(); break;
+		case 0xA9:  LDA_IME(); break;
 		case 0xAA:  TAX(); break;
 		case 0xAC:  LDY_ABS(); break;
-		//case 0xAD:  LDA_ABS(); break;
+		case 0xAD:  LDA_ABS(); break;
 		case 0xAE:  LDX_ABS(); break;
 		case 0xB0:  BCS(); break;
-		//case 0xB1:  LDA_POII_Y(); break;
+		case 0xB1:  LDA_POII(); break;
 		case 0xB4:  LDY_ZINX(); break;
-		//case 0xB5:  LDA_ZINX(); break;
+		case 0xB5:  LDA_ZINX(); break;
 		case 0xB6:  LDX_ZINY(); break;
 		case 0xB8:  CLV(); break;
-		//case 0xB9:  LDA_INX_Y(); break;
+		case 0xB9:  LDA_INX_Y(); break;
 		case 0xBA:  TSX(); break;
 		case 0xBC:  LDY_INX_X(); break;
-		//case 0xBD:  LDA_INX_X(); break;
+		case 0xBD:  LDA_INX_X(); break;
 		case 0xBE:  LDX_INX_Y(); break;
 		//case 0xC0:  CPY_IME(); break;
 		//case 0xC1:  CMP_PRII(); break;
@@ -193,6 +193,50 @@
 		}
 		
 	}
+
+
+	/////////   LDA INSTRUCTIONS 
+	void CPU::LDA_IME() {
+		//opcode 0xA9 2 bytes long
+		A = *GetPointerToDataInCPUMemoryUsing_IME_MODE();
+		BaseSZCheck(2, A);
+	}
+	void CPU::LDA_ZABS() {
+		//opcode 0xA5 2 bytes long
+		A = *GetPointerToDataInCPUMemoryUsing_ZABS_MODE();
+		BaseSZCheck(2, A);
+	}
+	void CPU::LDA_ZINX() {
+		//opcode 0xB5 2 bytes long
+		A = *GetPointerToDataInCPUMemoryUsing_ZINX_MODE();
+		BaseSZCheck(2, A);
+	}
+	void CPU::LDA_ABS() {
+		//opcode 0xAD 3 bytes long
+		A = *GetPointerToDataInCPUMemoryUsing_ABS_MODE();
+		BaseSZCheck(3, A);
+	}
+	void CPU::LDA_INX_X() {
+		//opcode 0xBD 3 bytes long
+		A = *GetPointerToDataInCPUMemoryUsing_INX_X_MODE();
+		BaseSZCheck(3, A);
+	}
+	void CPU::LDA_INX_Y() {
+		//opcode 0xB9 3 bytes long
+		A = *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE();
+		BaseSZCheck(3, A);
+	}
+	void CPU::LDA_PRII() {
+		//opcode 0xA1 2 bytes long
+		 A= *GetPointerToDataInCPUMemoryUsing_PRII_MODE();
+		BaseSZCheck(2, A);
+	}
+	void CPU::LDA_POII() {
+		//opcode 0xB1 2 bytes long
+		A = *GetPointerToDataInCPUMemoryUsing_POII_MODE();
+		BaseSZCheck(2, A);
+	}
+	////////////////  END    /////////////// 
 
 	int8_t CPU::InterruptRequestReset() {
 		if (FinishedExecutingCurrentInsctruction) {

@@ -2294,4 +2294,102 @@ namespace UnitTests
 			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
 		}
 	};
+	TEST_CLASS(LDA_INSTRUCTIONS) {
+		TEST_METHOD(LDA_IME) {
+			uint8_t OPCode = 0xA9;
+			uint8_t InstructionLength = 2;
+
+			CPU* aCPU = CreateIME_Instruction(OPCode, 0xBC);
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0xBC, (int)aCPU->A);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(LDA_ZABS) {
+			uint8_t OPCode = 0xA5;
+			uint8_t InstructionLength = 2;
+
+			CPU* aCPU = CreateZABS_Instruction(OPCode, 0xBC);
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0xBC, (int)aCPU->A);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(LDA_ZINX) {
+			uint8_t OPCode = 0xB5;
+			uint8_t InstructionLength = 2;
+
+			CPU* aCPU = CreateZINX_Instruction(OPCode, 0xBC);
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0xBC, (int)aCPU->A);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(LDA_ABS) {
+			uint8_t OPCode = 0xAD;
+			uint8_t InstructionLength = 3;
+
+			CPU* aCPU = CreateABS_Instruction(OPCode, 0xBC);
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0xBC, (int)aCPU->A);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(LDA_INX_X) {
+			uint8_t OPCode = 0xBD;
+			uint8_t InstructionLength = 3;
+
+			CPU* aCPU = CreateINX_X_Instruction(OPCode, 0xBC);
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0xBC, (int)aCPU->A);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(LDA_INX_Y) {
+			uint8_t OPCode = 0xB9;
+			uint8_t InstructionLength = 3;
+
+			CPU* aCPU = CreateINX_Y_Instruction(OPCode, 0xBC);
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0xBC, (int)aCPU->A);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(LDA_PRII) {
+			uint8_t OPCode = 0xA1;
+			uint8_t InstructionLength = 2;
+
+			CPU* aCPU = CreatePRII_Instruction(OPCode, 0xBC);
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0xBC, (int)aCPU->A);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(LDA_POII) {
+			uint8_t OPCode = 0xB1;
+			uint8_t InstructionLength = 2;
+
+			CPU* aCPU = CreatePOII_Instruction(OPCode, 0xBC);
+			aCPU->ExecuteNextInstruction();
+			Assert::AreEqual(0xBC, (int)aCPU->A);
+			Assert::IsTrue(aCPU->GetSign());
+			Assert::IsFalse(aCPU->GetZero());
+			Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+	};
 }
