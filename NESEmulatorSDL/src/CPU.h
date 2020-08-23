@@ -206,11 +206,8 @@
 		void ResetSign() {
 			P = P & 0b01111111;
 		}
-
 		
-		//same code runs after And and Or Operations
-		void BaseAND_OR(uint8_t InstructionLength);
-		
+		void BaseSZCheck(uint8_t InstructionLength,uint8_t DataToCheck);
 		void BaseASL(uint8_t InstructionLength,uint8_t* DataThaWillBeAltered);
 		struct BaseBranchReturnType {
 			bool Sign;
@@ -316,27 +313,27 @@
 		 void  STA_INX_Y(); 
 		 void  TXS(); 
 		 void  STA_INX_X(); 
-		// void  LDY_IME(); 
+		 void  LDY_IME(); 
 		// void  LDA_PRII(); 
 		// void  LDX_IME(); 
-		// void  LDY_ZABS(); 
+		 void  LDY_ZABS(); 
 		// void  LDA_ZABS(); 
 		// void  LDX_ZABS(); 
 		 void  TAY(); 
 		// void  LDA_IME(); 
 		 void  TAX(); 
-		// void  LDY_ABS(); 
+		 void  LDY_ABS(); 
 		// void  LDA_ABS(); 
 		// void  LDX_ABS(); 
 		 void  BCS(); 
 		// void  LDA_POII_Y(); 
-		// void  LDY_ZINX(); 
+		 void  LDY_ZINX(); 
 		// void  LDA_ZINX(); 
 		// void  LDX_ZINY(); 
 		 void  CLV(); 
 		// void  LDA_INX_Y(); 
 		 void  TSX(); 
-		// void  LDY_INX_X(); 
+		 void  LDY_INX_X(); 
 		// void  LDA_INX_X(); 
 		// void  LDX_INX_Y(); 
 		// void  CPY_IME(); 

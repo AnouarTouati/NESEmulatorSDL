@@ -129,27 +129,27 @@
 		case 0x99:  STA_INX_Y(); break;
 		case 0x9A:  TXS(); break;
 		case 0x9D:  STA_INX_X(); break;
-		//case 0xA0:  LDY_IME(); break;
+		case 0xA0:  LDY_IME(); break;
 		//case 0xA1:  LDA_PRII(); break;
 		//case 0xA2:  LDX_IME(); break;
-		//case 0xA4:  LDY_ZABS(); break;
+		case 0xA4:  LDY_ZABS(); break;
 		//case 0xA5:  LDA_ZABS(); break;
 		//case 0xA6:  LDX_ZABS(); break;
 		case 0xA8:  TAY(); break;
 		//case 0xA9:  LDA_IME(); break;
 		case 0xAA:  TAX(); break;
-		//case 0xAC:  LDY_ABS(); break;
+		case 0xAC:  LDY_ABS(); break;
 		//case 0xAD:  LDA_ABS(); break;
 		//case 0xAE:  LDX_ABS(); break;
 		case 0xB0:  BCS(); break;
 		//case 0xB1:  LDA_POII_Y(); break;
-		//case 0xB4:  LDY_ZINX(); break;
+		case 0xB4:  LDY_ZINX(); break;
 		//case 0xB5:  LDA_ZINX(); break;
 		//case 0xB6:  LDX_ZINY(); break;
 		case 0xB8:  CLV(); break;
 		//case 0xB9:  LDA_INX_Y(); break;
 		case 0xBA:  TSX(); break;
-		//case 0xBC:  LDY_INX_X(); break;
+		case 0xBC:  LDY_INX_X(); break;
 		//case 0xBD:  LDA_INX_X(); break;
 		//case 0xBE:  LDX_INX_Y(); break;
 		//case 0xC0:  CPY_IME(); break;
@@ -261,6 +261,19 @@
 		}
 	}
 	
+	//Check the sign and whether data is zero and Set/Reset flags appropriatly
+	void CPU::BaseSZCheck(uint8_t InstructionLength, uint8_t DataToCheck) {
+		if (DataToCheck == 0) { SetZero(); }
+		else { ResetZero(); }
+
+		if (GetSignFromData(&DataToCheck)) { SetSign(); }
+		else { ResetSign(); }
+
+		PC = PC + InstructionLength;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+
+
     void CPU::ADC_IME() {
 		//2 bytes instruction
 		  uint16_t sum = A + *CPUMemory[PC + 1];
@@ -299,58 +312,48 @@
 		PC = PC + 2;
 	}
 	/////////   AND_INSTRUCTIONS
-	void CPU::BaseAND_OR(uint8_t InstructionLength) {
-		if (A == 0) { SetZero(); }
-		else { ResetZero(); }
-
-		if (GetSignFromData(&A)) { SetSign(); }
-		else { ResetSign(); }
-
-		PC = PC + InstructionLength;
-		FinishedExecutingCurrentInsctruction = true;
-	}
 	void CPU::AND_IME() {
 		//OPCOE 0x29 2BYTES LONG
 		A = A & *GetPointerToDataInCPUMemoryUsing_IME_MODE();
-		BaseAND_OR(2);
+		BaseSZCheck(2,A);
 	}
 	void CPU::AND_ZABS() {
 		//opcode 0x25 2bytes long
 		A = A & *GetPointerToDataInCPUMemoryUsing_ZABS_MODE();
-		BaseAND_OR(2);
+		BaseSZCheck(2,A);
 	}    
 	void CPU::AND_ZINX() {
 		//opcode 0x35 2bytes long
 		A = A & *GetPointerToDataInCPUMemoryUsing_ZINX_MODE();
-		BaseAND_OR(2);
+		BaseSZCheck(2,A);
    }
 	void CPU::AND_ABS() {
 		//opcode 2D 3bytes long
 		
 		A = A & *GetPointerToDataInCPUMemoryUsing_ABS_MODE();
-		BaseAND_OR(3);
+		BaseSZCheck(3,A);
 	}
 	void CPU::AND_INX_X() {
 		//opcode 3D 3bytes long
 		A = A & *GetPointerToDataInCPUMemoryUsing_INX_X_MODE();
-		BaseAND_OR(3);
+		BaseSZCheck(3,A);
 	}
 	void CPU::AND_INX_Y() {
 		//opcode 39 3bytes long
 		A = A & *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE();
-		BaseAND_OR(3);
+		BaseSZCheck(3,A);
 	}
 	void CPU::AND_PRII() {
 		//opcode 21  2bytes long
 		
 		A = A & *GetPointerToDataInCPUMemoryUsing_PRII_MODE();
-		BaseAND_OR(2);
+		BaseSZCheck(2,A);
 	}
 	void CPU::AND_POII() {
 		//opcode 31  2bytes long
 		
 		A = A & *GetPointerToDataInCPUMemoryUsing_POII_MODE();
-		BaseAND_OR(2);
+		BaseSZCheck(2,A);
 	}
 	////////////////  END    ///////////////
 
@@ -800,47 +803,74 @@
 	////////////////  END    ///////////////
 
 	/////////   ORA_INSTRUCTION
-
 	void CPU::ORA_IME() {
 		//OPCOE 0x09 2BYTES LONG
 		A = A | *GetPointerToDataInCPUMemoryUsing_IME_MODE();
-		BaseAND_OR(2);
+		BaseSZCheck(2,A);
 	}
 	void CPU::ORA_ZABS() {
 		//opcode 0x05 2bytes long
 		A = A | *GetPointerToDataInCPUMemoryUsing_ZABS_MODE();
-		BaseAND_OR(2);
+		BaseSZCheck(2,A);
 	}
 	void CPU::ORA_ZINX() {
 		//opcode 0x15 2bytes long
 		A = A | *GetPointerToDataInCPUMemoryUsing_ZINX_MODE();
-		BaseAND_OR(2);
+		BaseSZCheck(2,A);
 	}
 	void CPU::ORA_ABS() {
 		//opcode 0D 3bytes long
 
 		A = A | *GetPointerToDataInCPUMemoryUsing_ABS_MODE();
-		BaseAND_OR(3);
+		BaseSZCheck(3,A);
 	}
 	void CPU::ORA_INX_X() {
 		//opcode 1D 3bytes long
 		A = A | *GetPointerToDataInCPUMemoryUsing_INX_X_MODE();
-		BaseAND_OR(3);
+		BaseSZCheck(3,A);
 	}
 	void CPU::ORA_INX_Y() {
 		//opcode 19 3bytes long
 		A = A | *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE();
-		BaseAND_OR(3);
+		BaseSZCheck(3,A);
 	}
 	void CPU::ORA_PRII() {
 		//opcode 01  2bytes long
 
 		A = A | *GetPointerToDataInCPUMemoryUsing_PRII_MODE();
-		BaseAND_OR(2);
+		BaseSZCheck(2,A);
 	}
 	void CPU::ORA_POII() {
 		//opcode 11  2bytes long
 		A = A | *GetPointerToDataInCPUMemoryUsing_POII_MODE();
-		BaseAND_OR(2);
+		BaseSZCheck(2,A);
 	}
 	////////////////  END    ///////////////
+
+	/////////   LDY INSTRUCTIONS 
+	void CPU::LDY_IME() {
+		//opcode 0xA0 2 bytes long
+		Y=*GetPointerToDataInCPUMemoryUsing_IME_MODE();
+		BaseSZCheck(2, Y);
+	}
+	void CPU::LDY_ZABS() {
+		//opcode 0xA4 2 bytes long
+		Y=*GetPointerToDataInCPUMemoryUsing_ZABS_MODE();
+		BaseSZCheck(2, Y);
+	}
+	void CPU::LDY_ZINX() {
+		//opcode 0xB4 2 bytes long
+		Y=*GetPointerToDataInCPUMemoryUsing_ZINX_MODE();
+		BaseSZCheck(2, Y);
+	}
+	void CPU::LDY_ABS() {
+		//opcode 0xAC 3 bytes long
+		Y=*GetPointerToDataInCPUMemoryUsing_ABS_MODE();
+		BaseSZCheck(3, Y);
+	}
+	void CPU::LDY_INX_X() {
+		//opcode 0xBC 3 bytes long
+		Y=*GetPointerToDataInCPUMemoryUsing_INX_X_MODE();
+		BaseSZCheck(3, Y);
+	}
+	////////////////  END    /////////////// 
