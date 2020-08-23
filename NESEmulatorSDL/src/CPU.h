@@ -208,8 +208,9 @@
 		}
 
 		
-
-		void BaseAND(uint8_t InstructionLength);
+		//same code runs after And and Or Operations
+		void BaseAND_OR(uint8_t InstructionLength);
+		
 		void BaseASL(uint8_t InstructionLength,uint8_t* DataThaWillBeAltered);
 		struct BaseBranchReturnType {
 			bool Sign;
@@ -220,21 +221,21 @@
 
 		
 		// void BRK(); 
-		// void  ORA_PRII(); 
-		// void  ORA_ZABS(); 
+		 void  ORA_PRII(); 
+		 void  ORA_ZABS(); 
 		 void   ASL_ZABS();
 		 void   PHP();
-		// void   ORA_IME();
+		 void   ORA_IME();
 		 void  ASL_ACC();
-		// void  ORA_ABS();
+		 void  ORA_ABS();
 		 void  ASL_ABS();
 		 void  BPL();
-		// void  ORA_POII();
-		// void ORA_ZINX();
+		 void  ORA_POII();
+		 void ORA_ZINX();
 		 void ASL_ZINX();
 		 void  CLC();
-		// void  ORA_INX_Y();
-		// void  ORA_INX_X();
+		 void  ORA_INX_Y();
+		 void  ORA_INX_X();
 		 void  ASL_INX_X();
 		// void  JSR();
 		 void  AND_PRII();
@@ -363,7 +364,7 @@
 		// void  INC_ZABS(); 
 		// void  INX(); 
 		// void  SBC_IME(); 
-		// void  NOP(); 
+		 void  NOP(); 
 		// void  CPX_ABS(); 
 		// void  SBC_ABS(); 
 		// void  INC_ABS(); 

@@ -20,28 +20,28 @@
 		switch (OPCode) {
 			
 		//case 0x00:  BRK(); break;
-		//case 0x01:  ORA_PRII(); break;
+		case 0x01:  ORA_PRII(); break;
 		//
-		//case 0x05:  ORA_ZABS(); break;
+	    case 0x05:  ORA_ZABS(); break;
 		case 0x06:  ASL_ZABS(); break;
 		//
 		case 0x08:  PHP(); break;
-		//case 0x09:  ORA_IME(); break;
+		case 0x09:  ORA_IME(); break;
 		case 0x0A:  ASL_ACC(); break;
 		//
-		//case 0x0D:  ORA_ABS(); break;
+		case 0x0D:  ORA_ABS(); break;
 		case 0x0E:  ASL_ABS(); break;
 		//
 		case 0x10:  BPL(); break;
-		//case 0x11:  ORA_POII(); break;
-		//
-		//case 0x15: ORA_ZINX (); break;
+		case 0x11:  ORA_POII(); break;
+		
+		case 0x15: ORA_ZINX (); break;
 		case 0x16: ASL_ZINX (); break;
 		//
 		case 0x18:  CLC(); break;
-		//case 0x19:  ORA_INX_Y(); break;
+		case 0x19:  ORA_INX_Y(); break;
 		//
-		//case 0x1D:  ORA_INX_X(); break;
+		case 0x1D:  ORA_INX_X(); break;
 		case 0x1E:  ASL_INX_X(); break;
 		//
 		//case 0x20:  JSR(); break;
@@ -177,7 +177,7 @@
 		//case 0xE6:  INC_ZABS(); break;
 		//case 0xE8:  INX(); break;
 		//case 0xE9:  SBC_IME(); break;
-		//case 0xEA:  NOP(); break;
+		case 0xEA:  NOP(); break;
 		//case 0xEC:  CPX_ABS(); break;
 		//case 0xED:  SBC_ABS(); break;
 		//case 0xEE:  INC_ABS(); break;
@@ -299,7 +299,7 @@
 		PC = PC + 2;
 	}
 	/////////   AND_INSTRUCTIONS
-	void CPU::BaseAND(uint8_t InstructionLength) {
+	void CPU::BaseAND_OR(uint8_t InstructionLength) {
 		if (A == 0) { SetZero(); }
 		else { ResetZero(); }
 
@@ -312,45 +312,45 @@
 	void CPU::AND_IME() {
 		//OPCOE 0x29 2BYTES LONG
 		A = A & *GetPointerToDataInCPUMemoryUsing_IME_MODE();
-		BaseAND(2);
+		BaseAND_OR(2);
 	}
 	void CPU::AND_ZABS() {
 		//opcode 0x25 2bytes long
 		A = A & *GetPointerToDataInCPUMemoryUsing_ZABS_MODE();
-		BaseAND(2);
+		BaseAND_OR(2);
 	}    
 	void CPU::AND_ZINX() {
 		//opcode 0x35 2bytes long
 		A = A & *GetPointerToDataInCPUMemoryUsing_ZINX_MODE();
-		BaseAND(2);
+		BaseAND_OR(2);
    }
 	void CPU::AND_ABS() {
 		//opcode 2D 3bytes long
 		
 		A = A & *GetPointerToDataInCPUMemoryUsing_ABS_MODE();
-		BaseAND(3);
+		BaseAND_OR(3);
 	}
 	void CPU::AND_INX_X() {
 		//opcode 3D 3bytes long
 		A = A & *GetPointerToDataInCPUMemoryUsing_INX_X_MODE();
-		BaseAND(3);
+		BaseAND_OR(3);
 	}
 	void CPU::AND_INX_Y() {
 		//opcode 39 3bytes long
 		A = A & *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE();
-		BaseAND(3);
+		BaseAND_OR(3);
 	}
 	void CPU::AND_PRII() {
 		//opcode 21  2bytes long
 		
 		A = A & *GetPointerToDataInCPUMemoryUsing_PRII_MODE();
-		BaseAND(2);
+		BaseAND_OR(2);
 	}
 	void CPU::AND_POII() {
 		//opcode 31  2bytes long
 		
 		A = A & *GetPointerToDataInCPUMemoryUsing_POII_MODE();
-		BaseAND(2);
+		BaseAND_OR(2);
 	}
 	////////////////  END    ///////////////
 
@@ -790,3 +790,57 @@
 	}
 
 	////////////////  END    /////////////// 
+
+	/////////   NOP INSTRUCTION 
+	void CPU::NOP() {
+		//opcode 0xEA 1 byte long
+		PC = PC + 1;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	////////////////  END    ///////////////
+
+	/////////   ORA_INSTRUCTION
+
+	void CPU::ORA_IME() {
+		//OPCOE 0x09 2BYTES LONG
+		A = A | *GetPointerToDataInCPUMemoryUsing_IME_MODE();
+		BaseAND_OR(2);
+	}
+	void CPU::ORA_ZABS() {
+		//opcode 0x05 2bytes long
+		A = A | *GetPointerToDataInCPUMemoryUsing_ZABS_MODE();
+		BaseAND_OR(2);
+	}
+	void CPU::ORA_ZINX() {
+		//opcode 0x15 2bytes long
+		A = A | *GetPointerToDataInCPUMemoryUsing_ZINX_MODE();
+		BaseAND_OR(2);
+	}
+	void CPU::ORA_ABS() {
+		//opcode 0D 3bytes long
+
+		A = A | *GetPointerToDataInCPUMemoryUsing_ABS_MODE();
+		BaseAND_OR(3);
+	}
+	void CPU::ORA_INX_X() {
+		//opcode 1D 3bytes long
+		A = A | *GetPointerToDataInCPUMemoryUsing_INX_X_MODE();
+		BaseAND_OR(3);
+	}
+	void CPU::ORA_INX_Y() {
+		//opcode 19 3bytes long
+		A = A | *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE();
+		BaseAND_OR(3);
+	}
+	void CPU::ORA_PRII() {
+		//opcode 01  2bytes long
+
+		A = A | *GetPointerToDataInCPUMemoryUsing_PRII_MODE();
+		BaseAND_OR(2);
+	}
+	void CPU::ORA_POII() {
+		//opcode 11  2bytes long
+		A = A | *GetPointerToDataInCPUMemoryUsing_POII_MODE();
+		BaseAND_OR(2);
+	}
+	////////////////  END    ///////////////
