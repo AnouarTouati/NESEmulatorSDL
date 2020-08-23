@@ -40,6 +40,9 @@
 		uint8_t* GetPointerToDataInCPUMemoryUsing_ZINX_MODE() {
 			return CPUMemory[*CPUMemory[PC + 1] + X];
 		}
+		uint8_t* GetPointerToDataInCPUMemoryUsing_ZINY_MODE() {
+			return CPUMemory[*CPUMemory[PC + 1] + Y];
+		}
 		uint8_t* GetPointerToDataInCPUMemoryUsing_ABS_MODE() {
 			return CPUMemory[Get16BitAddressFromMemoryLocation(PC + 1)];
 		}
@@ -274,17 +277,17 @@
 		 void  STA_PRII(); 
 		// void  STY_ZABS(); 
 		 void  STA_ZABS(); 
-		// void  STX_ZABS(); 
+		 void  STX_ZABS(); 
 		// void  DEY(); 
 		 void  TXA(); 
 		// void  STY_ABS(); 
 		 void  STA_ABS(); 
-		// void  STX_ABS(); 
+		 void  STX_ABS(); 
 		 void  BCC(); 
 		 void  STA_POII(); 
 		// void  STY_ZINX(); 
 		 void  STA_ZINX(); 
-		// void  STX_ZINY(); 
+		 void  STX_ZINY(); 
 		 void  TYA(); 
 		 void  STA_INX_Y(); 
 		 void  TXS(); 

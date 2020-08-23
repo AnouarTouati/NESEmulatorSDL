@@ -7,13 +7,14 @@
 #define TargetDataAddress_IME_MODE  0x0001
 #define TargetDataAddress_ZABS_MODE  0x00F5
 #define TargetDataAddress_ZINX_MODE  0x00C9
+#define TargetDataAddress_ZINY_MODE  0x00F7
 #define TargetDataAddress_ABS_MODE  0x621C 
 #define TargetDataAddress_INX_X_MODE  0xB0AE
 #define TargetDataAddress_INX_Y_MODE  0xB0AF
 #define TargetDataAddress_PRII_MODE  0xF0
 #define TargetDataAddress_POII_MODE  0xC0B1
 
-
+//ADDRESSING MODES TO GET OPERAND
 CPU* CreateIME_Instruction(uint8_t InstructionOPcode, uint8_t ImmediateValue) {
 	uint8_t** CPUMemory = CreateCPUMemory();
 	CPU* aCPU = new CPU(NULL, CPUMemory, NULL);
@@ -42,7 +43,17 @@ CPU* CreateZINX_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRe
 	aCPU->PC = 0x0000;
 	return aCPU;
 }
-//ADDRESSING MODES TO GET OPERAND
+CPU* CreateZINY_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRetrievedOnExecution) {
+	uint8_t** CPUMemory = CreateCPUMemory();
+	CPU* aCPU = new CPU(NULL, CPUMemory, NULL);
+	*CPUMemory[0x0000] = InstructionOPcode;
+	*CPUMemory[0x0001] = 0xF6;
+	aCPU->Y = 0x01;
+	*CPUMemory[0x00F7] = ValueThatWillBeRetrievedOnExecution;
+	aCPU->PC = 0x0000;
+	return aCPU;
+}
+
 CPU* CreateABS_Instruction(uint8_t InstructionOPcode, uint8_t ValueThatWillBeRetrievedOnExecution) {
 	uint8_t** CPUMemory = CreateCPUMemory();
 	CPU* aCPU = new CPU(NULL, CPUMemory, NULL);
