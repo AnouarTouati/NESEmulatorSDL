@@ -234,7 +234,7 @@
 		 void  ORA_INX_Y();
 		 void  ORA_INX_X();
 		 void  ASL_INX_X();
-		// void  JSR();
+		 void  JSR();
 		 void  AND_PRII();
 		 void  BIT_ZABS();
 		 void  AND_ZABS();
@@ -260,7 +260,7 @@
 		 void  PHA(); 
 		// void  EOR_IME(); 
 		// void  LSR_ACC(); 
-		// void  JMP_ABS(); 
+		 void  JMP_ABS(); 
 		// void  EOR_ABS(); 
 		// void  LSR_ABS(); 
 		 void  BVC(); 
@@ -284,7 +284,7 @@
 		//
 		//
 		// void  ROR_ACC();
-		// void  JMP_IND(); 
+		 void  JMP_IND(); 
 		// void  ADC_ABS(); 
 		// void  ROR_ABS(); 
 		 void  BVS(); 

@@ -44,7 +44,7 @@
 		case 0x1D:  ORA_INX_X(); break;
 		case 0x1E:  ASL_INX_X(); break;
 		//
-		//case 0x20:  JSR(); break;
+		case 0x20:  JSR(); break;
 		case 0x21:  AND_PRII(); break;
 		//
 		case 0x24:  BIT_ZABS(); break;
@@ -77,7 +77,7 @@
 		case 0x48:  PHA(); break;
 		//case 0x49:  EOR_IME(); break;
 		//case 0x4A:  LSR_ACC(); break;
-		//case 0x4C:  JMP_ABS(); break;
+		case 0x4C:  JMP_ABS(); break;
 		//case 0x4D:  EOR_ABS(); break;
 		//case 0x4E:  LSR_ABS(); break;
 		case 0x50:  BVC(); break;
@@ -100,7 +100,7 @@
 		//
 		//
 		//case 0x6A:  ROR_ACC(); break;
-		//case 0x6C:  JMP_IND(); break;
+		case 0x6C:  JMP_IND(); break;
 		//case 0x6D:  ADC_ABS(); break;
 		//case 0x6E:  ROR_ABS(); break;
 		case 0x70:  BVS(); break;
@@ -194,6 +194,28 @@
 		
 	}
 
+	///////// JUMP INSTRUCTIONS
+	void CPU::JSR() {
+		//opcode 0x20 
+		uint16_t address = Get16BitAddressFromMemoryLocation(PC + 1);
+
+		PC = PC + 2;
+		PushPCtoStack();
+
+		PC = address;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::JMP_ABS() {
+	   //OPCODE 0x4C
+		PC = Get16BitAddressFromMemoryLocation(PC+1);
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	void CPU::JMP_IND() {
+		//opcode 0x6C
+		PC =*CPUMemory[Get16BitAddressFromMemoryLocation(PC+1)];
+		FinishedExecutingCurrentInsctruction = true;
+	}
+	////////////    END //////////// 
 
 	/////////   LDA INSTRUCTIONS 
 	void CPU::LDA_IME() {

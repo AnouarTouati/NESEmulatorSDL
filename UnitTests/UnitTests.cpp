@@ -2392,4 +2392,51 @@ namespace UnitTests
 			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
 		}
 	};
+	TEST_CLASS(JUMP_INSTRUCTIONS) {
+		TEST_METHOD(JSR) {
+			uint8_t OPCode = 0x20;
+			CPU* aCPU;
+
+			aCPU = new CPU(NULL,CreateCPUMemory(), NULL);
+
+			*aCPU->CPUMemory[0xB004] = OPCode;
+			*aCPU->CPUMemory[0xB005] = 0xFF;
+			*aCPU->CPUMemory[0xB006] = 0xDD;
+			aCPU->PC = 0xB004;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0xDDFF, (int)aCPU->PC);
+			Assert::AreEqual(0xB006, (int)aCPU->PopPCfromStack());//RTS INSTRUCTION WILL ADDED ONE TO 0xB006 
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+		}
+		TEST_METHOD(JMP_IND) {
+			uint8_t OPCode = 0x4C;
+			CPU* aCPU = new CPU(NULL, CreateCPUMemory(), NULL);
+
+			*aCPU->CPUMemory[0xB004] = OPCode;
+			*aCPU->CPUMemory[0xB005] = 0xFF;
+			*aCPU->CPUMemory[0xB006] = 0xDD;
+			aCPU->PC = 0xB004;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0xDDFF, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		}
+		TEST_METHOD(JMP_ABS) {
+			uint8_t OPCode = 0x6C;
+			CPU* aCPU = new CPU(NULL, CreateCPUMemory(), NULL);
+
+			*aCPU->CPUMemory[0xB004] = OPCode;
+			*aCPU->CPUMemory[0xB005] = 0xFF;
+			*aCPU->CPUMemory[0xB006] = 0xDD;
+			*aCPU->CPUMemory[0xDDFF] = 0x56;
+			aCPU->PC = 0xB004;
+			aCPU->ExecuteNextInstruction();
+
+			Assert::AreEqual(0x0056, (int)aCPU->PC);
+			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		}
+	};
 }
