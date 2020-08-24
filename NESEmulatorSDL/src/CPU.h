@@ -207,6 +207,7 @@
 			P = P & 0b01111111;
 		}
 		
+		void BaseCOMPARE(uint8_t InstructionLength, uint8_t ValueToCompare1, uint8_t ValueToCompare2);
 		void BaseSZCheck(uint8_t InstructionLength,uint8_t DataToCheck);
 		void BaseASL(uint8_t InstructionLength,uint8_t* DataThaWillBeAltered);
 		struct BaseBranchReturnType {
@@ -336,34 +337,34 @@
 		 void  LDY_INX_X(); 
 		 void  LDA_INX_X(); 
 		 void  LDX_INX_Y(); 
-		// void  CPY_IME(); 
-		// void  CMP_PRII(); 
-		// void  CPY_ZABS(); 
-		// void  CMP_ZABS(); 
+		 void  CPY_IME(); 
+		 void  CMP_PRII(); 
+		 void  CPY_ZABS(); 
+		 void  CMP_ZABS(); 
 		 void  DEC_ZABS(); 
 		 void  INY(); 
-		// void  CMP_IME(); 
+		 void  CMP_IME(); 
 		 void  DEX(); 
-		// void  CPY_ABS(); 
-		// void  CMP_ABS(); 
+		 void  CPY_ABS(); 
+		 void  CMP_ABS(); 
 		 void  DEC_ABS();
 		 void  BNE(); 
-		// void  CMP_POII(); 
-		// void  CMP_ZINX(); 
+		 void  CMP_POII(); 
+		 void  CMP_ZINX(); 
 		 void  DEC_ZINX(); 
 		 void  CLD(); 
-		// void  CMP_INX_Y(); 
-		// void  CMP_INX_X(); 
+		 void  CMP_INX_Y(); 
+		 void  CMP_INX_X(); 
 		 void  DEC_INX_X(); 
-		// void  CPX_IME(); 
+		 void  CPX_IME(); 
 		// void  SBC_PRII(); 
-		// void  CPX_ZABS(); 
+		 void  CPX_ZABS(); 
 		// void  SBC_ZABS(); 
 		 void  INC_ZABS(); 
 		 void  INX(); 
 		// void  SBC_IME(); 
 		 void  NOP(); 
-		// void  CPX_ABS(); 
+		 void  CPX_ABS(); 
 		// void  SBC_ABS(); 
 		 void  INC_ABS(); 
 		 void  BEQ(); 

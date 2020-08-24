@@ -152,34 +152,34 @@
 		case 0xBC:  LDY_INX_X(); break;
 		case 0xBD:  LDA_INX_X(); break;
 		case 0xBE:  LDX_INX_Y(); break;
-		//case 0xC0:  CPY_IME(); break;
-		//case 0xC1:  CMP_PRII(); break;
-		//case 0xC4:  CPY_ZABS(); break;
-		//case 0xC5:  CMP_ZABS(); break;
+		case 0xC0:  CPY_IME(); break;
+		case 0xC1:  CMP_PRII(); break;
+		case 0xC4:  CPY_ZABS(); break;
+		case 0xC5:  CMP_ZABS(); break;
 		case 0xC6:  DEC_ZABS(); break;
 		case 0xC8:  INY(); break;
-		//case 0xC9:  CMP_IME(); break;
+		case 0xC9:  CMP_IME(); break;
 		case 0xCA:  DEX(); break;
-		//case 0xCC:  CPY_ABS(); break;
-		//case 0xCD:  CMP_ABS(); break;
-		case 0xCD:  DEC_ABS(); break;
+	    case 0xCC:  CPY_ABS(); break;
+		case 0xCD:  CMP_ABS(); break;
+		case 0xCE:  DEC_ABS(); break;
 		case 0xD0:  BNE(); break;
-		//case 0xD1:  CMP_POII(); break;
-		//case 0xD5:  CMP_ZINX(); break;
+		case 0xD1:  CMP_POII(); break;
+		case 0xD5:  CMP_ZINX(); break;
 		case 0xD6:  DEC_ZINX(); break;
 		case 0xD8:  CLD(); break;
-		//case 0xD9:  CMP_INX_Y(); break;
-		//case 0xDD:  CMP_INX_X(); break;
+		case 0xD9:  CMP_INX_Y(); break;
+		case 0xDD:  CMP_INX_X(); break;
 		case 0xDE:  DEC_INX_X(); break;
-		//case 0xE0:  CPX_IME(); break;
+		case 0xE0:  CPX_IME(); break;
 		//case 0xE1:  SBC_PRII(); break;
-		//case 0xE4:  CPX_ZABS(); break;
+		case 0xE4:  CPX_ZABS(); break;
 		//case 0xE5:  SBC_ZABS(); break;
 		case 0xE6:  INC_ZABS(); break;
 		case 0xE8:  INX(); break;
 		//case 0xE9:  SBC_IME(); break;
 		case 0xEA:  NOP(); break;
-		//case 0xEC:  CPX_ABS(); break;
+		case 0xEC:  CPX_ABS(); break;
 		//case 0xED:  SBC_ABS(); break;
 		case 0xEE:  INC_ABS(); break;
 		case 0xF0:  BEQ(); break;
@@ -194,6 +194,96 @@
 		}
 		
 	}
+
+	void CPU::BaseCOMPARE(uint8_t InstructionLength, uint8_t RegisterValue, uint8_t MemoryValue) {
+		if (RegisterValue >= MemoryValue) {
+			//we dont need a borrow thus SetCarry
+			SetCarry();
+		}
+		else {
+			ResetCarry();
+		}
+		if (RegisterValue == MemoryValue) {
+			SetZero();
+		}
+		else {
+			ResetZero();
+		}
+		uint8_t data = RegisterValue - MemoryValue;
+		if (GetSignFromData(&data)) { SetSign(); }
+		else { ResetSign(); }
+
+		PC = PC + InstructionLength;
+		FinishedExecutingCurrentInsctruction = true;
+	}
+
+
+
+	///////////CPX_INSTRUCTIONS
+	void CPU::CMP_IME() {
+		//OPCODE 0xC9
+		BaseCOMPARE(2, A, *GetPointerToDataInCPUMemoryUsing_IME_MODE());
+	}
+	void CPU::CMP_ZABS() {
+		//opcode 0xC5
+		BaseCOMPARE(2, A, *GetPointerToDataInCPUMemoryUsing_ZABS_MODE());
+	}
+	void CPU::CMP_ZINX() {
+		//opcode 0xD5
+		BaseCOMPARE(2, A, *GetPointerToDataInCPUMemoryUsing_ZINX_MODE());
+	}
+	void CPU::CMP_ABS() {
+		//opcode 0xCD
+		BaseCOMPARE(3, A, *GetPointerToDataInCPUMemoryUsing_ABS_MODE());
+	}
+	void CPU::CMP_INX_X() {
+		//opcode 0xDD
+		BaseCOMPARE(3, A, *GetPointerToDataInCPUMemoryUsing_INX_X_MODE());
+	}
+	void CPU::CMP_INX_Y() {
+		//opcode 0xD9
+		BaseCOMPARE(3, A, *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE());
+	}
+	void CPU::CMP_PRII() {
+		//opcode 0xC1
+		BaseCOMPARE(2, A, *GetPointerToDataInCPUMemoryUsing_PRII_MODE());
+	}
+	void CPU::CMP_POII() {
+		//opcode 0xD1
+		BaseCOMPARE(2, A, *GetPointerToDataInCPUMemoryUsing_POII_MODE());
+	}
+	////////////    END //////////// 
+
+	///////////CPX_INSTRUCTIONS
+	void CPU::CPX_IME() {
+		//OPCODE 0xE0
+		BaseCOMPARE(2, X, *GetPointerToDataInCPUMemoryUsing_IME_MODE());
+	}
+	void CPU::CPX_ZABS() {
+		//opcode 0xE4
+		BaseCOMPARE(2, X, *GetPointerToDataInCPUMemoryUsing_ZABS_MODE());
+	}
+	void CPU::CPX_ABS() {
+		//opcode 0xEC
+		BaseCOMPARE(3, X, *GetPointerToDataInCPUMemoryUsing_ABS_MODE());
+	}
+	////////////    END //////////// 
+
+
+	///////////CPY_INSTRUCTIONS
+	void CPU::CPY_IME() {
+		//OPCODE 0xC0
+		BaseCOMPARE(2,Y,*GetPointerToDataInCPUMemoryUsing_IME_MODE());
+	}
+	void CPU::CPY_ZABS() {
+		//opcode 0xC4
+		BaseCOMPARE(2, Y, *GetPointerToDataInCPUMemoryUsing_ZABS_MODE());
+	}
+	void CPU::CPY_ABS() {
+		//opcode 0xCC
+		BaseCOMPARE(3, Y, *GetPointerToDataInCPUMemoryUsing_ABS_MODE());
+	}
+	////////////    END //////////// 
 
 
 	///////// DECREMENT INSTRUCTIONS
@@ -213,7 +303,7 @@
 		BaseSZCheck(2, *GetPointerToDataInCPUMemoryUsing_ZINX_MODE());
 	}
 	void CPU::DEC_ABS() {
-		//OPCODE 0xCD
+		//OPCODE 0xCE
 		*GetPointerToDataInCPUMemoryUsing_ABS_MODE() -= 1;
 		BaseSZCheck(3, *GetPointerToDataInCPUMemoryUsing_ABS_MODE());
 	}
