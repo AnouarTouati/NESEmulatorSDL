@@ -115,7 +115,7 @@
 		case 0x84:  STY_ZABS(); break;
 		case 0x85:  STA_ZABS(); break;
 		case 0x86:  STX_ZABS(); break;
-		//case 0x88:  DEY(); break;
+		case 0x88:  DEY(); break;
 		case 0x8A:  TXA(); break;
 		case 0x8C:  STY_ABS(); break;
 		case 0x8D:  STA_ABS(); break;
@@ -156,43 +156,119 @@
 		//case 0xC1:  CMP_PRII(); break;
 		//case 0xC4:  CPY_ZABS(); break;
 		//case 0xC5:  CMP_ZABS(); break;
-		//case 0xC6:  DEC_ZABS(); break;
-		//case 0xC8:  INY(); break;
+		case 0xC6:  DEC_ZABS(); break;
+		case 0xC8:  INY(); break;
 		//case 0xC9:  CMP_IME(); break;
-		//case 0xCA:  DEX(); break;
+		case 0xCA:  DEX(); break;
 		//case 0xCC:  CPY_ABS(); break;
 		//case 0xCD:  CMP_ABS(); break;
+		case 0xCD:  DEC_ABS(); break;
 		case 0xD0:  BNE(); break;
 		//case 0xD1:  CMP_POII(); break;
 		//case 0xD5:  CMP_ZINX(); break;
-		//case 0xD6:  DEC_ZINX(); break;
+		case 0xD6:  DEC_ZINX(); break;
 		case 0xD8:  CLD(); break;
 		//case 0xD9:  CMP_INX_Y(); break;
 		//case 0xDD:  CMP_INX_X(); break;
-		//case 0xDE:  DEC_INX_X(); break;
+		case 0xDE:  DEC_INX_X(); break;
 		//case 0xE0:  CPX_IME(); break;
 		//case 0xE1:  SBC_PRII(); break;
 		//case 0xE4:  CPX_ZABS(); break;
 		//case 0xE5:  SBC_ZABS(); break;
-		//case 0xE6:  INC_ZABS(); break;
-		//case 0xE8:  INX(); break;
+		case 0xE6:  INC_ZABS(); break;
+		case 0xE8:  INX(); break;
 		//case 0xE9:  SBC_IME(); break;
 		case 0xEA:  NOP(); break;
 		//case 0xEC:  CPX_ABS(); break;
 		//case 0xED:  SBC_ABS(); break;
-		//case 0xEE:  INC_ABS(); break;
+		case 0xEE:  INC_ABS(); break;
 		case 0xF0:  BEQ(); break;
 		//case 0xF1:  SBC_POII(); break;
 		//case 0xF5:  SBC_ZINX(); break;
-		//case 0xF6:  INC_ZINX(); break;
+		case 0xF6:  INC_ZINX(); break;
 		case 0xF8:  SED(); break;
 		//case 0xF9:  SBC_INX_Y(); break;
 		//case 0xFD:  SBC_INX_X(); break;
-		//case 0xFE:  INC_INX_X(); break;
+		case 0xFE:  INC_INX_X(); break;
 		//default:LOG_WARN("OPCode not supported"); break;
 		}
 		
 	}
+
+
+	///////// DECREMENT INSTRUCTIONS
+	void CPU::DEC_ZABS() {
+		//OPCODE 0xC6
+		*GetPointerToDataInCPUMemoryUsing_ZABS_MODE() -= 1;
+		BaseSZCheck(2, *GetPointerToDataInCPUMemoryUsing_ZABS_MODE());
+	}
+	void CPU::DEC_INX_X() {
+		//OPCODE 0xDE
+		*GetPointerToDataInCPUMemoryUsing_INX_X_MODE() -= 1;
+		BaseSZCheck(3, *GetPointerToDataInCPUMemoryUsing_INX_X_MODE());
+	}
+	void CPU::DEC_ZINX() {
+		//OPCODE 0xD6
+		*GetPointerToDataInCPUMemoryUsing_ZINX_MODE() -= 1;
+		BaseSZCheck(2, *GetPointerToDataInCPUMemoryUsing_ZINX_MODE());
+	}
+	void CPU::DEC_ABS() {
+		//OPCODE 0xCD
+		*GetPointerToDataInCPUMemoryUsing_ABS_MODE() -= 1;
+		BaseSZCheck(3, *GetPointerToDataInCPUMemoryUsing_ABS_MODE());
+	}
+
+	///////////////////////////////////
+	void CPU::DEX() {
+		//0xCA
+		X = X - 1;
+		BaseSZCheck(1, X);
+
+	}
+	void CPU::DEY() {
+		//0x88
+		Y = Y - 1;
+		BaseSZCheck(1, Y);
+	}
+	////////////    END //////////// 
+
+
+
+	///////// INCREMENT INSTRUCTIONS
+	void CPU::INC_ZABS() {
+		//OPCODE 0xE6
+		*GetPointerToDataInCPUMemoryUsing_ZABS_MODE() += 1;
+		BaseSZCheck(2, *GetPointerToDataInCPUMemoryUsing_ZABS_MODE());
+	}
+	void CPU::INC_INX_X() {
+		//OPCODE 0xFE
+		*GetPointerToDataInCPUMemoryUsing_INX_X_MODE() += 1;
+		BaseSZCheck(3, *GetPointerToDataInCPUMemoryUsing_INX_X_MODE());
+	}
+	void CPU::INC_ZINX() {
+		//OPCODE 0xF6
+		*GetPointerToDataInCPUMemoryUsing_ZINX_MODE() += 1;
+		BaseSZCheck(2, *GetPointerToDataInCPUMemoryUsing_ZINX_MODE());
+	}
+	void CPU::INC_ABS() {
+		//OPCODE 0xEE
+		*GetPointerToDataInCPUMemoryUsing_ABS_MODE() += 1;
+		BaseSZCheck(3, *GetPointerToDataInCPUMemoryUsing_ABS_MODE());
+	}
+	
+	///////////////////////////////////
+	void CPU::INX() {
+		//0xE8
+		X = X + 1;
+		BaseSZCheck(1, X);
+	
+	}
+	void CPU::INY() {
+		//0xC8
+		Y = Y + 1;
+		BaseSZCheck(1, Y);
+	}
+	////////////    END //////////// 
 
 	///////// JUMP INSTRUCTIONS
 	void CPU::JSR() {
