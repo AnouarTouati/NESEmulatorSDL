@@ -175,6 +175,7 @@
 		void ResetBreak() {
 			P = P & 0b11101111;
 		}
+		
 		///R flag is always 1 no need for it
 		/// 
 		bool GetOverflow() {
@@ -218,7 +219,7 @@
 		
 
 		
-		// void BRK(); 
+		 void BRK(); 
 		 void  ORA_PRII(); 
 		 void  ORA_ZABS(); 
 		 void   ASL_ZABS();

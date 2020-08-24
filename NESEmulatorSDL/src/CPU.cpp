@@ -19,7 +19,7 @@
 	
 		switch (OPCode) {
 			
-		//case 0x00:  BRK(); break;
+		case 0x00:  BRK(); break;
 		case 0x01:  ORA_PRII(); break;
 		//
 	    case 0x05:  ORA_ZABS(); break;
@@ -217,9 +217,20 @@
 		FinishedExecutingCurrentInsctruction = true;
 	}
 
+	//////////// BRK INSTRUCTION
+	void CPU::BRK() {
+		//OPCODE 0x00 1 byte long
+		PC = PC + 2;
+		PushPCtoStack();
+		SetBreak();
+		PushToStack(P);
+		SetInterruptDisbale();
+		PC = Get16BitAddressFromMemoryLocation(0xFFFE);
+		FinishedExecutingCurrentInsctruction = true;
+	}
+    ////////////    END ////////////
 
-
-	///////////CPX_INSTRUCTIONS
+	///////////CMP_INSTRUCTIONS
 	void CPU::CMP_IME() {
 		//OPCODE 0xC9
 		BaseCOMPARE(2, A, *GetPointerToDataInCPUMemoryUsing_IME_MODE());
@@ -441,7 +452,8 @@
 
 	int8_t CPU::InterruptRequestMaskable() {
 		if (FinishedExecutingCurrentInsctruction) {
-			if ((P bitand 0b00000100) == 0) {
+			if ((P & 0b00000100) == 0) {
+				ResetBreak();
 				*CPUMemory[0x0100 + SP] = PC & 0x0F;
 				SP--;
 				*CPUMemory[0x0100 + SP] = (PC & 0xF0) >> 8;
@@ -469,7 +481,8 @@
 	int8_t CPU::InterruptRequestNonMaskable() {
 		if (FinishedExecutingCurrentInsctruction) {
 			//only maskbale by PPU control register 1 if bit 7 is reset
-			if ((*PPUControlRegister1 bitand 0b10000000) != 0) {
+			if ((*PPUControlRegister1 & 0b10000000) != 0) {
+				ResetBreak();
 				*CPUMemory[0x0100 + SP] = PC & 0x0F;
 				SP--;
 				*CPUMemory[0x0100 + SP] = (PC & 0xF0) >> 8;
@@ -1013,6 +1026,7 @@
 	}
 	void CPU::PHP() {
 		//opcode 0x08 1 BYTELONG
+		SetBreak();
 		PushToStack(P);
 		PC = PC + 1;
 		FinishedExecutingCurrentInsctruction = true;

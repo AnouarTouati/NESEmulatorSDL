@@ -1761,9 +1761,9 @@ namespace UnitTests
 			CPU* aCPU;
 
 			aCPU = CreatIMPLIED_Instruction(OPCode);
-			aCPU->P = 0x16;
+			aCPU->P = 0b10000000;
 			aCPU->ExecuteNextInstruction();
-			Assert::AreEqual(0x16, (int)aCPU->PopStack());
+			Assert::AreEqual(0b10010000, (int)aCPU->PopStack());//bit5 of break should be set
 			Assert::AreEqual(0x0001, (int)aCPU->PC);
 			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
 		}
@@ -2794,7 +2794,7 @@ namespace UnitTests
 			Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
 		};
 };
-TEST_CLASS(CPM_INSTRUCTIONS) {
+    TEST_CLASS(CPM_INSTRUCTIONS) {
 	TEST_METHOD(CPM_IME) {
 		uint8_t OPCode = 0xC9;
 		uint8_t InstructionLength = 0x02;
@@ -3079,4 +3079,22 @@ TEST_CLASS(CPM_INSTRUCTIONS) {
 		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
 	}
 };
+TEST_CLASS(BRK_INSTRUCTION) {
+	TEST_METHOD(BRK) {
+		uint8_t OPCode = 0x00;
+		CPU* aCPU = CreatIMPLIED_Instruction(OPCode);
+		
+		*aCPU->CPUMemory[0xFFFE] = 0x22;
+		*aCPU->CPUMemory[0xFFFF] = 0x44;
+		aCPU->P = 0x00;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetBreak());
+		Assert::IsTrue(aCPU->GetInterruptDisable());
+		Assert::AreEqual(0x4422, (int)aCPU->PC);
+		Assert::AreEqual(0b00010000, (int)aCPU->PopStack());
+		Assert::AreEqual(0x02, (int)aCPU->PopPCfromStack());
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+	}
+	};
 }
