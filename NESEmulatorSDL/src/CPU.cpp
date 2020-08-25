@@ -91,7 +91,7 @@
 		case 0x60:  RTS(); break;
 		case 0x61:  ADC_PRII(); break;
 		case 0x65:  ADC_ZABS(); break;
-		//case 0x66:  ROR_ZABS(); break;
+		case 0x66:  ROR_ZABS(); break;
 		case 0x68:  PLA(); break;
 		//
 		//
@@ -99,18 +99,18 @@
 		//
 		//
 		//
-		//case 0x6A:  ROR_ACC(); break;
+		case 0x6A:  ROR_ACC(); break;
 		case 0x6C:  JMP_IND(); break;
 		case 0x6D:  ADC_ABS(); break;
-		//case 0x6E:  ROR_ABS(); break;
+		case 0x6E:  ROR_ABS(); break;
 		case 0x70:  BVS(); break;
 		case 0x71:  ADC_POII(); break;
 		case 0x75:  ADC_ZINX(); break;
-		//case 0x76:  ROR_ZINX(); break;
+		case 0x76:  ROR_ZINX(); break;
 		case 0x78:  SEI(); break;
 		case 0x79:  ADC_INX_Y(); break;
 		case 0x7D:  ADC_INX_X(); break;
-		//case 0x7E:  ROR_INX_X(); break;
+		case 0x7E:  ROR_INX_X(); break;
 		case 0x81:  STA_PRII(); break;
 		case 0x84:  STY_ZABS(); break;
 		case 0x85:  STA_ZABS(); break;
@@ -194,6 +194,42 @@
 		}
 		
 	}
+
+	void CPU::BaseROR(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered) {
+		bool CarryWas = GetCarry();
+		if (*DataThaWillBeAltered & 0x01) {
+			SetCarry();
+		}
+		else { ResetCarry(); }
+		*DataThaWillBeAltered = *DataThaWillBeAltered >> 1;
+		if (CarryWas == true) {
+			*DataThaWillBeAltered = *DataThaWillBeAltered | 0x80;
+		}
+		BaseSZCheck(InstructionLength, *DataThaWillBeAltered);
+	}
+	/////////   ROR_INSTRUCTION
+	void CPU::ROR_ACC() {
+		//opcode 0x6A 1 byte long
+		BaseROR(1, &A);
+	}
+	void CPU::ROR_ZABS() {
+		//opcode 0x66 2 byte long
+		BaseROR(2, GetPointerToDataInCPUMemoryUsing_ZABS_MODE());
+	}
+	void CPU::ROR_ZINX() {
+		//opcode 0x76 2 byte long
+		BaseROR(2, GetPointerToDataInCPUMemoryUsing_ZINX_MODE());
+	}
+	void CPU::ROR_ABS() {
+		//opcode 0x6E 3 byte long
+		BaseROR(3, GetPointerToDataInCPUMemoryUsing_ABS_MODE());
+	}
+	void CPU::ROR_INX_X() {
+		//opcode 0x7E 3 byte long
+		BaseROR(3, GetPointerToDataInCPUMemoryUsing_INX_X_MODE());
+	}
+	////////////////  END    ///////////////
+
 
 
 	void CPU::BaseROL(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered) {

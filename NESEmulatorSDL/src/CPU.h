@@ -209,6 +209,7 @@
 			P = P & 0b01111111;
 		}
 		
+		void BaseROR(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered);
 		void BaseROL(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered);
 		void BaseOverflowCheckOnAddition(uint8_t Value1, uint8_t Value2);
 		void BaseCOMPARE(uint8_t InstructionLength, uint8_t ValueToCompare1, uint8_t ValueToCompare2);
@@ -279,27 +280,22 @@
 		 void  RTS(); 
 		 void  ADC_PRII(); 
 		 void  ADC_ZABS(); 
-		// void  ROR_ZABS(); 
+		 void  ROR_ZABS(); 
 		 void  PLA(); 
-		//
-		//
-		//
+		
 		 void ADC_IME(); 
-		//
-		//
-		//
-		// void  ROR_ACC();
+		 void  ROR_ACC();
 		 void  JMP_IND(); 
 		 void  ADC_ABS(); 
-		// void  ROR_ABS(); 
+	     void  ROR_ABS(); 
 		 void  BVS(); 
 		 void  ADC_POII(); 
 		 void  ADC_ZINX(); 
-		// void  ROR_ZINX(); 
+		 void  ROR_ZINX(); 
 		 void  SEI(); 
 		 void  ADC_INX_Y(); 
 	     void  ADC_INX_X(); 
-		// void  ROR_INX_X(); 
+		 void  ROR_INX_X(); 
 		 void  STA_PRII(); 
 		 void  STY_ZABS(); 
 		 void  STA_ZABS(); 
