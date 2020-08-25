@@ -21,84 +21,64 @@
 			
 		case 0x00:  BRK(); break;
 		case 0x01:  ORA_PRII(); break;
-		//
 	    case 0x05:  ORA_ZABS(); break;
 		case 0x06:  ASL_ZABS(); break;
-		//
 		case 0x08:  PHP(); break;
 		case 0x09:  ORA_IME(); break;
 		case 0x0A:  ASL_ACC(); break;
-		//
 		case 0x0D:  ORA_ABS(); break;
 		case 0x0E:  ASL_ABS(); break;
-		//
 		case 0x10:  BPL(); break;
 		case 0x11:  ORA_POII(); break;
-		
 		case 0x15: ORA_ZINX (); break;
 		case 0x16: ASL_ZINX (); break;
-		//
 		case 0x18:  CLC(); break;
 		case 0x19:  ORA_INX_Y(); break;
-		//
 		case 0x1D:  ORA_INX_X(); break;
 		case 0x1E:  ASL_INX_X(); break;
-		//
 		case 0x20:  JSR(); break;
 		case 0x21:  AND_PRII(); break;
-		//
 		case 0x24:  BIT_ZABS(); break;
 		case 0x25:  AND_ZABS(); break;
 		case 0x26:  ROL_ZABS(); break;
-		//
 		case 0x28:  PLP(); break;
 		case 0x29:  AND_IME(); break;
 		case 0x2A:  ROL_ACC(); break;
-		//
 		case 0x2C:  BIT_ABS(); break;
 		case 0x2D:  AND_ABS(); break;
 		case 0x2E:  ROL_ABS(); break;
-		//
 		case 0x30:  BMI(); break;
 		case 0x31:  AND_POII(); break;
-		//
 		case 0x35:  AND_ZINX(); break;
 		case 0x36:  ROL_ZINX(); break;
-		//
 		case 0x38:  SEC(); break;
 		case 0x39:  AND_INX_Y(); break;
-		//
 		case 0x3D:  AND_INX_X(); break;
 		case 0x3E:  ROL_INX_X(); break;
 		case 0x40:  RTI(); break;
 		case 0x41:  EOR_PRII(); break;
 		case 0x45:  EOR_ZABS(); break;
-		//case 0x46:  LSR_ZABS(); break;
+		case 0x46:  LSR_ZABS(); break;
 		case 0x48:  PHA(); break;
 		case 0x49:  EOR_IME(); break;
-		//case 0x4A:  LSR_ACC(); break;
+		case 0x4A:  LSR_ACC(); break;
 		case 0x4C:  JMP_ABS(); break;
 		case 0x4D:  EOR_ABS(); break;
-		//case 0x4E:  LSR_ABS(); break;
+		case 0x4E:  LSR_ABS(); break;
 		case 0x50:  BVC(); break;
 		case 0x51:  EOR_POII(); break;
 		case 0x55:  EOR_ZINX(); break;
-		//case 0x56:  LSR_ZINX(); break;
+		case 0x56:  LSR_ZINX(); break;
 		case 0x58:  CLI(); break;
 		case 0x59:  EOR_INX_Y(); break;
 		case 0x5D:  EOR_INX_X(); break;
-		//case 0x5E:  LSR_INX_X(); break;
+		case 0x5E:  LSR_INX_X(); break;
 		case 0x60:  RTS(); break;
 		case 0x61:  ADC_PRII(); break;
 		case 0x65:  ADC_ZABS(); break;
 		case 0x66:  ROR_ZABS(); break;
 		case 0x68:  PLA(); break;
-		//
-		//
 		case 0x69:  ADC_IME(); break;
-		//
-		//
-		//
 		case 0x6A:  ROR_ACC(); break;
 		case 0x6C:  JMP_IND(); break;
 		case 0x6D:  ADC_ABS(); break;
@@ -194,6 +174,45 @@
 		}
 		
 	}
+
+
+
+	/////////   LSR_INSTRUCTIONS
+	void CPU::BaseLSR(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered) {
+		if (*DataThaWillBeAltered & 0x01) { SetCarry(); }
+		else { ResetCarry(); }
+
+		*DataThaWillBeAltered = *DataThaWillBeAltered >> 1;
+		BaseSZCheck(InstructionLength, *DataThaWillBeAltered);
+
+	}
+	void CPU::LSR_ACC() {
+		//opcode 0x4A 1byte long
+		BaseLSR(1, &A);
+	}
+	void CPU::LSR_ZABS() {
+		//opcode 0x46 2bytes long
+		BaseLSR(2, GetPointerToDataInCPUMemoryUsing_ZABS_MODE());
+	}
+	void CPU::LSR_ZINX() {
+		//opcode 0x56 2 bytes long
+		BaseLSR(2, GetPointerToDataInCPUMemoryUsing_ZINX_MODE());
+	}
+	void CPU::LSR_ABS() {
+		//opcode 0x4E 3 bytes long
+		BaseLSR(3, GetPointerToDataInCPUMemoryUsing_ABS_MODE());
+	}
+	void CPU::LSR_INX_X() {
+		//opcode 0x5E 3 bytes long
+		BaseLSR(3, GetPointerToDataInCPUMemoryUsing_INX_X_MODE());
+	}
+	////////////////  END    ///////////////
+
+
+
+
+
+
 
 	void CPU::BaseROR(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered) {
 		bool CarryWas = GetCarry();

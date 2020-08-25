@@ -3974,7 +3974,7 @@ public:
 		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
 	}
 };
-TEST_CLASS(ROR_INSTRUCTIONS) {
+    TEST_CLASS(ROR_INSTRUCTIONS) {
 	TEST_METHOD(ROR_ACC) {
 		uint8_t OPCode = 0x6A;
 		uint8_t InstructionLength = 0x01;
@@ -4128,5 +4128,170 @@ TEST_CLASS(ROR_INSTRUCTIONS) {
 		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
 		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
 	}
+};
+TEST_CLASS(LSR_INSTRUCTIONS) {
+
+
+	TEST_METHOD(LSR_ACC) {
+		//opcoe 0x4A 1 byte long
+		CPU* aCPU;
+		//TEST1
+		aCPU = CreateACC_Instruction(0x4A);
+
+		Assert::IsFalse(aCPU->GetCarry());
+		aCPU->A = 0b00000001;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::IsFalse(aCPU->GetSignFromData(&aCPU->A));
+		Assert::IsTrue(aCPU->GetZero());
+		Assert::AreEqual(0b00000000, (int)aCPU->A);
+
+		Assert::AreEqual(0x01, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreateACC_Instruction(0x4A);
+
+		Assert::IsFalse(aCPU->GetCarry());
+		aCPU->A = 0b01000000;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::IsFalse(aCPU->GetSignFromData(&aCPU->A));
+		Assert::IsFalse(aCPU->GetZero());
+		Assert::AreEqual(0b00100000, (int)aCPU->A);
+
+		Assert::AreEqual(0x01, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+
+	}
+	TEST_METHOD(LSR_ZABS) {
+		//opcode 0x46 2 bytes long
+		CPU* aCPU;
+		//TEST1
+		aCPU = CreateZABS_Instruction(0x46, 0b00000001);
+
+		Assert::IsFalse(aCPU->GetCarry());
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::IsFalse(aCPU->GetSignFromData(aCPU->CPUMemory[TargetDataAddress_ZABS_MODE]));
+		Assert::IsTrue(aCPU->GetZero());
+		Assert::AreEqual(0b00000000, (int)*aCPU->CPUMemory[TargetDataAddress_ZABS_MODE]);
+
+		Assert::AreEqual(0x02, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreateZABS_Instruction(0x46, 0b01000000);
+
+		Assert::IsFalse(aCPU->GetCarry());
+		aCPU->A = 0b01000000;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::IsFalse(aCPU->GetSignFromData(aCPU->CPUMemory[TargetDataAddress_ZABS_MODE]));
+		Assert::IsFalse(aCPU->GetZero());
+		Assert::AreEqual(0b00100000, (int)*aCPU->CPUMemory[TargetDataAddress_ZABS_MODE]);
+
+		Assert::AreEqual(0x02, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+	}
+	TEST_METHOD(LSR_ZINX) {
+		//opcode 0x56 2 bytes long
+		CPU* aCPU;
+		//TEST1
+		aCPU = CreateZINX_Instruction(0x56, 0b00000001);
+
+		Assert::IsFalse(aCPU->GetCarry());
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::IsFalse(aCPU->GetSignFromData(aCPU->CPUMemory[TargetDataAddress_ZINX_MODE]));
+		Assert::IsTrue(aCPU->GetZero());
+		Assert::AreEqual(0b00000000, (int)*aCPU->CPUMemory[TargetDataAddress_ZINX_MODE]);
+
+		Assert::AreEqual(0x02, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreateZINX_Instruction(0x56, 0b01000000);
+
+		Assert::IsFalse(aCPU->GetCarry());
+		aCPU->A = 0b01000000;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::IsFalse(aCPU->GetSignFromData(aCPU->CPUMemory[TargetDataAddress_ZINX_MODE]));
+		Assert::IsFalse(aCPU->GetZero());
+		Assert::AreEqual(0b00100000, (int)*aCPU->CPUMemory[TargetDataAddress_ZINX_MODE]);
+
+		Assert::AreEqual(0x02, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+
+	}
+	TEST_METHOD(LSR_ABS) {
+		//opcode 0x4E 3 bytes long
+		CPU* aCPU;
+		//TEST1
+		aCPU = CreateABS_Instruction(0x4E, 0b00000001);
+
+		Assert::IsFalse(aCPU->GetCarry());
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::IsFalse(aCPU->GetSignFromData(aCPU->CPUMemory[TargetDataAddress_ABS_MODE]));
+		Assert::IsTrue(aCPU->GetZero());
+		Assert::AreEqual(0b00000000, (int)*aCPU->CPUMemory[TargetDataAddress_ABS_MODE]);
+
+		Assert::AreEqual(0x03, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreateABS_Instruction(0x4E, 0b01000000);
+
+		Assert::IsFalse(aCPU->GetCarry());
+		aCPU->A = 0b01000000;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::IsFalse(aCPU->GetSignFromData(aCPU->CPUMemory[TargetDataAddress_ABS_MODE]));
+		Assert::IsFalse(aCPU->GetZero());
+		Assert::AreEqual(0b00100000, (int)*aCPU->CPUMemory[TargetDataAddress_ABS_MODE]);
+
+		Assert::AreEqual(0x03, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		
+	}
+	TEST_METHOD(LSR_INX_X) {
+		//opcode 0x5E 3 bytes long
+		CPU* aCPU;
+		//TEST1
+		aCPU = CreateINX_X_Instruction(0x5E, 0b00000001);
+
+		Assert::IsFalse(aCPU->GetCarry());
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::IsFalse(aCPU->GetSignFromData(aCPU->CPUMemory[TargetDataAddress_INX_X_MODE]));
+		Assert::IsTrue(aCPU->GetZero());
+		Assert::AreEqual(0b00000000, (int)*aCPU->CPUMemory[TargetDataAddress_INX_X_MODE]);
+
+		Assert::AreEqual(0x03, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreateINX_X_Instruction(0x5E, 0b01000000);
+
+		Assert::IsFalse(aCPU->GetCarry());
+		aCPU->A = 0b01000000;
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::IsFalse(aCPU->GetSignFromData(aCPU->CPUMemory[TargetDataAddress_INX_X_MODE]));
+		Assert::IsFalse(aCPU->GetZero());
+		Assert::AreEqual(0b00100000, (int)*aCPU->CPUMemory[TargetDataAddress_INX_X_MODE]);
+
+		Assert::AreEqual(0x03, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+	
+	}
+
 };
 }

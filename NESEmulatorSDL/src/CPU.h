@@ -209,6 +209,7 @@
 			P = P & 0b01111111;
 		}
 		
+		void BaseLSR(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered);
 		void BaseROR(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered);
 		void BaseROL(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered);
 		void BaseOverflowCheckOnAddition(uint8_t Value1, uint8_t Value2);
@@ -262,21 +263,21 @@
 		 void  RTI();
 		 void  EOR_PRII();
 		 void  EOR_ZABS();
-		// void  LSR_ZABS(); 
+		 void  LSR_ZABS(); 
 		 void  PHA(); 
 		 void  EOR_IME(); 
-		// void  LSR_ACC(); 
+		 void  LSR_ACC(); 
 		 void  JMP_ABS(); 
 		 void  EOR_ABS(); 
-		// void  LSR_ABS(); 
+		 void  LSR_ABS(); 
 		 void  BVC(); 
 		 void  EOR_POII(); 
 		 void  EOR_ZINX(); 
-		// void  LSR_ZINX(); 
+		 void  LSR_ZINX(); 
 		 void  CLI(); 
 		 void  EOR_INX_Y(); 
 		 void  EOR_INX_X(); 
-		// void  LSR_INX_X(); 
+		 void  LSR_INX_X(); 
 		 void  RTS(); 
 		 void  ADC_PRII(); 
 		 void  ADC_ZABS(); 
