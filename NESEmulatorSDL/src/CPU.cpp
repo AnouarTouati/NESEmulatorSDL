@@ -89,8 +89,8 @@
 		//case 0x5D:  EOR_INX_X(); break;
 		//case 0x5E:  LSR_INX_X(); break;
 		case 0x60:  RTS(); break;
-		//case 0x61:  ADC_PRII(); break;
-		//case 0x65:  ADC_ZABS(); break;
+		case 0x61:  ADC_PRII(); break;
+		case 0x65:  ADC_ZABS(); break;
 		//case 0x66:  ROR_ZABS(); break;
 		case 0x68:  PLA(); break;
 		//
@@ -101,15 +101,15 @@
 		//
 		//case 0x6A:  ROR_ACC(); break;
 		case 0x6C:  JMP_IND(); break;
-		//case 0x6D:  ADC_ABS(); break;
+		case 0x6D:  ADC_ABS(); break;
 		//case 0x6E:  ROR_ABS(); break;
 		case 0x70:  BVS(); break;
-		//case 0x71:  ADC_POII(); break;
-		//case 0x75:  ADC_ZINX(); break;
+		case 0x71:  ADC_POII(); break;
+		case 0x75:  ADC_ZINX(); break;
 		//case 0x76:  ROR_ZINX(); break;
 		case 0x78:  SEI(); break;
-		//case 0x79:  ADC_INX_Y(); break;
-		//case 0x7D:  ADC_INX_X(); break;
+		case 0x79:  ADC_INX_Y(); break;
+		case 0x7D:  ADC_INX_X(); break;
 		//case 0x7E:  ROR_INX_X(); break;
 		case 0x81:  STA_PRII(); break;
 		case 0x84:  STY_ZABS(); break;
@@ -517,44 +517,158 @@
 		PC = PC + InstructionLength;
 		FinishedExecutingCurrentInsctruction = true;
 	}
-
-
-    void CPU::ADC_IME() {
-		//2 bytes instruction
-		  uint16_t sum = A + *CPUMemory[PC + 1];
-		  if (GetCarry()) {
-			  sum = sum + 1;
-		  }
-
-		bool ThereIsCarry = sum & 0b100000000;
-
-		bool ThereIsOverflow = false;
-		if ((A & 0b10000000) != (*CPUMemory[PC + 1] & 0b10000000))//operands have different sign there is a possibility of overflow
-		{
-			if ((A & 0b10000000) != (sum & 0b10000000)) //result sign not the same as operands sign means overflow
-			{
-				ThereIsOverflow = true;
+	
+	void CPU::BaseOverflowCheckOnAddition(uint8_t Value1, uint8_t Value2) {
+	
+		if (GetSignFromData(&Value1) != GetSignFromData(&Value2)) {
+			//no overflow
+			ResetOverflow();
+		}
+		else {
+			//overflow is a possibility
+			uint8_t sum = Value1 + Value2;
+		
+			if (GetSignFromData(&sum) != GetSignFromData(&Value2)) {
+				//overflow happened
+				SetOverflow();
+			}
+			else {
+				ResetOverflow();
 			}
 		}
 
-		A = A + *CPUMemory[PC + 1] ;
+	}
+    void CPU::ADC_IME() {
+		//2 bytes instruction
+		uint8_t Carry = 0;
+		BaseOverflowCheckOnAddition(A, *GetPointerToDataInCPUMemoryUsing_IME_MODE());
 		if (GetCarry()) {
-			A = A + 1;
+			Carry = 1;
+			uint8_t ByteSum = A + *GetPointerToDataInCPUMemoryUsing_IME_MODE();
+			BaseOverflowCheckOnAddition(ByteSum, Carry);
 		}
-		if (A == 0) { SetZero(); }
-		else { ResetZero(); }
-
-		//this wont work we are using unsigned unit8_t
-		if (GetSignFromData(&A)) { SetSign(); }//set N(S) sign flag to 1 if negative
-		else{  ResetSign(); }
-
-		if (ThereIsCarry) { SetCarry(); }
+		uint16_t sum = A + *GetPointerToDataInCPUMemoryUsing_IME_MODE() + Carry;
+		  /*if (!((A | *GetPointerToDataInCPUMemoryUsing_IME_MODE()) & 0x80) && ((A | sum) & 0x80)) {
+			  SetOverflow();
+		  }
+		  else {
+			  ResetOverflow();
+		  }*/
+		  if (sum & 0x0100) { SetCarry(); }
+		  else { ResetCarry(); }
+		  A = sum;//truncated
+		  BaseSZCheck(2, A);
+	}
+	void CPU::ADC_ZABS() {
+		//opcode 0X65 2 bytes instruction
+		uint8_t Carry = 0;
+		BaseOverflowCheckOnAddition(A, *GetPointerToDataInCPUMemoryUsing_ZABS_MODE());
+		if (GetCarry()) {
+			Carry = 1;
+			uint8_t ByteSum = A + *GetPointerToDataInCPUMemoryUsing_ZABS_MODE();
+			BaseOverflowCheckOnAddition(ByteSum, Carry);
+		}
+		uint16_t sum = A + *GetPointerToDataInCPUMemoryUsing_ZABS_MODE() + Carry;
+	
+		if (sum & 0x0100) { SetCarry(); }
 		else { ResetCarry(); }
-
-		if (ThereIsOverflow) { SetOverflow(); }
-		else { ResetOverflow(); }
-
-		PC = PC + 2;
+		A = sum;//truncated
+		BaseSZCheck(2, A);
+	}
+	void CPU::ADC_ZINX() {
+		//opcode 0x75 2 bytes instruction
+		uint8_t Carry = 0;
+		BaseOverflowCheckOnAddition(A, *GetPointerToDataInCPUMemoryUsing_ZINX_MODE());
+		if (GetCarry()) {
+			Carry = 1;
+			uint8_t ByteSum = A + *GetPointerToDataInCPUMemoryUsing_ZINX_MODE();
+			BaseOverflowCheckOnAddition(ByteSum, Carry);
+		}
+		uint16_t sum = A + *GetPointerToDataInCPUMemoryUsing_ZINX_MODE() + Carry;
+		
+		if (sum & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = sum;//truncated
+		BaseSZCheck(2, A);
+	}
+	void CPU::ADC_ABS() {
+		//opcode 0x6D 3 bytes instruction
+		uint8_t Carry = 0;
+		BaseOverflowCheckOnAddition(A, *GetPointerToDataInCPUMemoryUsing_ABS_MODE());
+		if (GetCarry()) {
+			Carry = 1;
+			uint8_t ByteSum = A + *GetPointerToDataInCPUMemoryUsing_ABS_MODE();
+			BaseOverflowCheckOnAddition(ByteSum, Carry);
+		}
+		uint16_t sum = A + *GetPointerToDataInCPUMemoryUsing_ABS_MODE() + Carry;
+		
+		if (sum & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = sum;//truncated
+		BaseSZCheck(3, A);
+	}
+	void CPU::ADC_INX_X() {
+		//opcode 0x7D 3 bytes instruction
+		uint8_t Carry = 0;
+		BaseOverflowCheckOnAddition(A, *GetPointerToDataInCPUMemoryUsing_INX_X_MODE());
+		if (GetCarry()) {
+			Carry = 1;
+			uint8_t ByteSum = A + *GetPointerToDataInCPUMemoryUsing_INX_X_MODE();
+			BaseOverflowCheckOnAddition(ByteSum, Carry);
+		}
+		uint16_t sum = A + *GetPointerToDataInCPUMemoryUsing_INX_X_MODE() + Carry;
+		
+		if (sum & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = sum;//truncated
+		BaseSZCheck(3, A);
+	}
+	void CPU::ADC_INX_Y() {
+		//opcode 0x79 3 bytes instruction
+		uint8_t Carry = 0;
+		BaseOverflowCheckOnAddition(A, *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE());
+		if (GetCarry()) {
+			Carry = 1;
+			uint8_t ByteSum = A + *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE();
+			BaseOverflowCheckOnAddition(ByteSum, Carry);
+		}
+		uint16_t sum = A + *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE() + Carry;
+		
+		if (sum & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = sum;//truncated
+		BaseSZCheck(3, A);
+	}
+	void CPU::ADC_PRII() {
+		//opcdoe 0x61 2 bytes instruction
+		uint8_t Carry = 0;
+		BaseOverflowCheckOnAddition(A, *GetPointerToDataInCPUMemoryUsing_PRII_MODE());
+		if (GetCarry()) {
+			Carry = 1;
+			uint8_t ByteSum = A + *GetPointerToDataInCPUMemoryUsing_PRII_MODE();
+			BaseOverflowCheckOnAddition(ByteSum, Carry);
+		}
+		uint16_t sum = A + *GetPointerToDataInCPUMemoryUsing_PRII_MODE() + Carry;
+		if (sum & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = sum;//truncated
+		BaseSZCheck(2, A);
+	}
+	void CPU::ADC_POII() {
+		//OPCODE 0X71 2 bytes instruction
+		uint8_t Carry = 0;
+		BaseOverflowCheckOnAddition(A, *GetPointerToDataInCPUMemoryUsing_POII_MODE());
+		if (GetCarry()) {
+			Carry = 1;
+			uint8_t ByteSum = A + *GetPointerToDataInCPUMemoryUsing_POII_MODE();
+			BaseOverflowCheckOnAddition(ByteSum, Carry);
+		}
+		uint16_t sum = A + *GetPointerToDataInCPUMemoryUsing_POII_MODE() + Carry;
+		
+		if (sum & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = sum;//truncated
+		BaseSZCheck(2, A);
 	}
 	/////////   AND_INSTRUCTIONS
 	void CPU::AND_IME() {

@@ -92,8 +92,9 @@
 			PushToStack(Lower);
 			PushToStack(Upper);
 		}
-		bool GetSignFromData(const uint8_t* TargetData) {
-			if (*TargetData & 0b10000000) {
+		//////should change parameter later to uint8_t not a pointer
+		bool GetSignFromData(uint8_t* DataToCheck) {
+			if (*DataToCheck & 0b10000000) {
 				return true;
 			}
 			else {
@@ -208,6 +209,7 @@
 			P = P & 0b01111111;
 		}
 		
+		void BaseOverflowCheckOnAddition(uint8_t Value1, uint8_t Value2);
 		void BaseCOMPARE(uint8_t InstructionLength, uint8_t ValueToCompare1, uint8_t ValueToCompare2);
 		void BaseSZCheck(uint8_t InstructionLength,uint8_t DataToCheck);
 		void BaseASL(uint8_t InstructionLength,uint8_t* DataThaWillBeAltered);
@@ -274,8 +276,8 @@
 		// void  EOR_INX_X(); 
 		// void  LSR_INX_X(); 
 		 void  RTS(); 
-		// void  ADC_PRII(); 
-		// void  ADC_ZABS(); 
+		 void  ADC_PRII(); 
+		 void  ADC_ZABS(); 
 		// void  ROR_ZABS(); 
 		 void  PLA(); 
 		//
@@ -287,15 +289,15 @@
 		//
 		// void  ROR_ACC();
 		 void  JMP_IND(); 
-		// void  ADC_ABS(); 
+		 void  ADC_ABS(); 
 		// void  ROR_ABS(); 
 		 void  BVS(); 
-		// void  ADC_POII(); 
-		// void  ADC_ZINX(); 
+		 void  ADC_POII(); 
+		 void  ADC_ZINX(); 
 		// void  ROR_ZINX(); 
 		 void  SEI(); 
-		// void  ADC_INX_Y(); 
-		// void  ADC_INX_X(); 
+		 void  ADC_INX_Y(); 
+	     void  ADC_INX_X(); 
 		// void  ROR_INX_X(); 
 		 void  STA_PRII(); 
 		 void  STY_ZABS(); 
