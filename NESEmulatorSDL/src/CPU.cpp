@@ -49,27 +49,27 @@
 		//
 		case 0x24:  BIT_ZABS(); break;
 		case 0x25:  AND_ZABS(); break;
-		//case 0x26:  ROL_ZABS(); break;
+		case 0x26:  ROL_ZABS(); break;
 		//
 		case 0x28:  PLP(); break;
 		case 0x29:  AND_IME(); break;
-		//case 0x2A:  ROL_ACC(); break;
+		case 0x2A:  ROL_ACC(); break;
 		//
 		case 0x2C:  BIT_ABS(); break;
 		case 0x2D:  AND_ABS(); break;
-		//case 0x2E:  ROL_ABS(); break;
+		case 0x2E:  ROL_ABS(); break;
 		//
 		case 0x30:  BMI(); break;
 		case 0x31:  AND_POII(); break;
 		//
 		case 0x35:  AND_ZINX(); break;
-		//case 0x36:  ROL_ZINX(); break;
+		case 0x36:  ROL_ZINX(); break;
 		//
 		case 0x38:  SEC(); break;
 		case 0x39:  AND_INX_Y(); break;
 		//
 		case 0x3D:  AND_INX_X(); break;
-		//case 0x3E:  ROL_INX_X(); break;
+		case 0x3E:  ROL_INX_X(); break;
 		case 0x40:  RTI(); break;
 		case 0x41:  EOR_PRII(); break;
 		case 0x45:  EOR_ZABS(); break;
@@ -196,7 +196,40 @@
 	}
 
 
-
+	void CPU::BaseROL(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered) {
+		bool CarryWas = GetCarry();
+		if (GetSignFromData(DataThaWillBeAltered)) {
+			SetCarry();
+		}
+		else { ResetCarry(); }
+		*DataThaWillBeAltered = *DataThaWillBeAltered << 1;
+		if (CarryWas==true) {
+			*DataThaWillBeAltered = *DataThaWillBeAltered | 0x01;
+		}
+		BaseSZCheck(InstructionLength, *DataThaWillBeAltered);
+	}
+	/////////   ROL_INSTRUCTION
+	void CPU::ROL_ACC() {
+		//opcode 0x2A 1 byte long
+		BaseROL(1, &A);
+	}
+	void CPU::ROL_ZABS() {
+		//opcode 0x26 2 byte long
+		BaseROL(2, GetPointerToDataInCPUMemoryUsing_ZABS_MODE());
+	}
+	void CPU::ROL_ZINX() {
+		//opcode 0x36 2 byte long
+		BaseROL(2, GetPointerToDataInCPUMemoryUsing_ZINX_MODE());
+	}
+	void CPU::ROL_ABS() {
+		//opcode 0x2E 3 byte long
+		BaseROL(3, GetPointerToDataInCPUMemoryUsing_ABS_MODE());
+	}
+	void CPU::ROL_INX_X() {
+		//opcode 0x3E 3 byte long
+		BaseROL(3, GetPointerToDataInCPUMemoryUsing_INX_X_MODE());
+	}
+	////////////////  END    ///////////////
 
 	/////////   EOR_INSTRUCTION
 	void CPU::EOR_IME() {

@@ -209,6 +209,7 @@
 			P = P & 0b01111111;
 		}
 		
+		void BaseROL(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered);
 		void BaseOverflowCheckOnAddition(uint8_t Value1, uint8_t Value2);
 		void BaseCOMPARE(uint8_t InstructionLength, uint8_t ValueToCompare1, uint8_t ValueToCompare2);
 		void BaseSZCheck(uint8_t InstructionLength,uint8_t DataToCheck);
@@ -242,21 +243,21 @@
 		 void  AND_PRII();
 		 void  BIT_ZABS();
 		 void  AND_ZABS();
-		// void  ROL_ZABS();
+		 void  ROL_ZABS();
 		 void  PLP();
 		 void  AND_IME();
-		// void  ROL_ACC();
+	     void  ROL_ACC();
 		 void  BIT_ABS();
 		 void  AND_ABS();
-		// void  ROL_ABS();
+		 void  ROL_ABS();
 		 void  BMI();
 		 void  AND_POII();
 		 void  AND_ZINX();
-		// void  ROL_ZINX();
+		 void  ROL_ZINX();
 		 void  SEC();
 		 void  AND_INX_Y();
 		 void  AND_INX_X();
-		// void  ROL_INX_X();
+		 void  ROL_INX_X();
 		 void  RTI();
 		 void  EOR_PRII();
 		 void  EOR_ZABS();
