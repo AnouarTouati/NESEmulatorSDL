@@ -71,22 +71,22 @@
 		case 0x3D:  AND_INX_X(); break;
 		//case 0x3E:  ROL_INX_X(); break;
 		case 0x40:  RTI(); break;
-		//case 0x41:  EOR_PRII(); break;
-		//case 0x45:  EOR_ZABS(); break;
+		case 0x41:  EOR_PRII(); break;
+		case 0x45:  EOR_ZABS(); break;
 		//case 0x46:  LSR_ZABS(); break;
 		case 0x48:  PHA(); break;
-		//case 0x49:  EOR_IME(); break;
+		case 0x49:  EOR_IME(); break;
 		//case 0x4A:  LSR_ACC(); break;
 		case 0x4C:  JMP_ABS(); break;
-		//case 0x4D:  EOR_ABS(); break;
+		case 0x4D:  EOR_ABS(); break;
 		//case 0x4E:  LSR_ABS(); break;
 		case 0x50:  BVC(); break;
-		//case 0x51:  EOR_POII(); break;
-		//case 0x55:  EOR_ZINX(); break;
+		case 0x51:  EOR_POII(); break;
+		case 0x55:  EOR_ZINX(); break;
 		//case 0x56:  LSR_ZINX(); break;
 		case 0x58:  CLI(); break;
-		//case 0x59:  EOR_INX_Y(); break;
-		//case 0x5D:  EOR_INX_X(); break;
+		case 0x59:  EOR_INX_Y(); break;
+		case 0x5D:  EOR_INX_X(); break;
 		//case 0x5E:  LSR_INX_X(); break;
 		case 0x60:  RTS(); break;
 		case 0x61:  ADC_PRII(); break;
@@ -194,6 +194,56 @@
 		}
 		
 	}
+
+
+
+
+	/////////   EOR_INSTRUCTION
+	void CPU::EOR_IME() {
+		//OPCOE 0x49 2BYTES LONG
+		A = A ^ *GetPointerToDataInCPUMemoryUsing_IME_MODE();
+		BaseSZCheck(2, A);
+	}
+	void CPU::EOR_ZABS() {
+		//opcode 0x45 2bytes long
+		A = A ^ *GetPointerToDataInCPUMemoryUsing_ZABS_MODE();
+		BaseSZCheck(2, A);
+	}
+	void CPU::EOR_ZINX() {
+		//opcode 0x55 2bytes long
+		A = A ^ *GetPointerToDataInCPUMemoryUsing_ZINX_MODE();
+		BaseSZCheck(2, A);
+	}
+	void CPU::EOR_ABS() {
+		//opcode 4D 3bytes long
+
+		A = A ^ *GetPointerToDataInCPUMemoryUsing_ABS_MODE();
+		BaseSZCheck(3, A);
+	}
+	void CPU::EOR_INX_X() {
+		//opcode 5D 3bytes long
+		A = A ^ *GetPointerToDataInCPUMemoryUsing_INX_X_MODE();
+		BaseSZCheck(3, A);
+	}
+	void CPU::EOR_INX_Y() {
+		//opcode 59 3bytes long
+		A = A ^ *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE();
+		BaseSZCheck(3, A);
+	}
+	void CPU::EOR_PRII() {
+		//opcode 41  2bytes long
+
+		A = A ^ *GetPointerToDataInCPUMemoryUsing_PRII_MODE();
+		BaseSZCheck(2, A);
+	}
+	void CPU::EOR_POII() {
+		//opcode 51  2bytes long
+		A = A ^ *GetPointerToDataInCPUMemoryUsing_POII_MODE();
+		BaseSZCheck(2, A);
+	}
+	////////////////  END    ///////////////
+
+
 
 	void CPU::BaseCOMPARE(uint8_t InstructionLength, uint8_t RegisterValue, uint8_t MemoryValue) {
 		if (RegisterValue >= MemoryValue) {
