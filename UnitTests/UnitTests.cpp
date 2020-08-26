@@ -4294,4 +4294,391 @@ TEST_CLASS(LSR_INSTRUCTIONS) {
 	}
 
 };
+
+TEST_CLASS(SBC_INSTRUCTIONS) {
+	TEST_METHOD(SBC_IME) {
+		uint8_t OPCode = 0xE9;
+		uint8_t InstructionLength = 0x02;
+		CPU* aCPU;
+
+		//test examples from http://www.6502.org/tutorials/vflag.html
+
+		//TEST1
+		aCPU = CreateIME_Instruction(OPCode, 0x40);
+		aCPU->A = 0xC0;
+		aCPU->ResetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreateIME_Instruction(OPCode, 0xFF);
+		aCPU->A = 0x7F;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST3
+		aCPU = CreateIME_Instruction(OPCode, 0x01);
+		aCPU->A = 0x80;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST4
+		aCPU = CreateIME_Instruction(OPCode, 0x01);
+		aCPU->A = 0x00;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+	}
+	TEST_METHOD(SBC_ZABS) {
+		uint8_t OPCode = 0xE5;
+		uint8_t InstructionLength = 0x02;
+		CPU* aCPU;
+
+		//test examples from http://www.6502.org/tutorials/vflag.html
+
+		//TEST1
+		aCPU = CreateZABS_Instruction(OPCode, 0x40);
+		aCPU->A = 0xC0;
+		aCPU->ResetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreateZABS_Instruction(OPCode, 0xFF);
+		aCPU->A = 0x7F;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST3
+		aCPU = CreateZABS_Instruction(OPCode, 0x01);
+		aCPU->A = 0x80;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST4
+		aCPU = CreateZABS_Instruction(OPCode, 0x01);
+		aCPU->A = 0x00;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+	}
+	TEST_METHOD(SBC_ZINX) {
+		uint8_t OPCode = 0xF5;
+		uint8_t InstructionLength = 0x02;
+		CPU* aCPU;
+
+		//test examples from http://www.6502.org/tutorials/vflag.html
+
+		//TEST1
+		aCPU = CreateZINX_Instruction(OPCode, 0x40);
+		aCPU->A = 0xC0;
+		aCPU->ResetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreateZINX_Instruction(OPCode, 0xFF);
+		aCPU->A = 0x7F;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST3
+		aCPU = CreateZINX_Instruction(OPCode, 0x01);
+		aCPU->A = 0x80;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST4
+		aCPU = CreateZINX_Instruction(OPCode, 0x01);
+		aCPU->A = 0x00;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+	}
+	TEST_METHOD(SBC_ABS) {
+		uint8_t OPCode = 0xED;
+		uint8_t InstructionLength = 0x03;
+		CPU* aCPU;
+
+		//test examples from http://www.6502.org/tutorials/vflag.html
+
+		//TEST1
+		aCPU = CreateABS_Instruction(OPCode, 0x40);
+		aCPU->A = 0xC0;
+		aCPU->ResetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreateABS_Instruction(OPCode, 0xFF);
+		aCPU->A = 0x7F;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST3
+		aCPU = CreateABS_Instruction(OPCode, 0x01);
+		aCPU->A = 0x80;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST4
+		aCPU = CreateABS_Instruction(OPCode, 0x01);
+		aCPU->A = 0x00;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+	}
+	TEST_METHOD(SBC_INX_X) {
+		uint8_t OPCode = 0xFD;
+		uint8_t InstructionLength = 0x03;
+		CPU* aCPU;
+
+		//test examples from http://www.6502.org/tutorials/vflag.html
+
+		//TEST1
+		aCPU = CreateINX_X_Instruction(OPCode, 0x40);
+		aCPU->A = 0xC0;
+		aCPU->ResetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreateINX_X_Instruction(OPCode, 0xFF);
+		aCPU->A = 0x7F;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST3
+		aCPU = CreateINX_X_Instruction(OPCode, 0x01);
+		aCPU->A = 0x80;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST4
+		aCPU = CreateINX_X_Instruction(OPCode, 0x01);
+		aCPU->A = 0x00;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+	}
+	TEST_METHOD(SBC_INX_Y) {
+		uint8_t OPCode = 0xF9;
+		uint8_t InstructionLength = 0x03;
+		CPU* aCPU;
+
+		//test examples from http://www.6502.org/tutorials/vflag.html
+
+		//TEST1
+		aCPU = CreateINX_Y_Instruction(OPCode, 0x40);
+		aCPU->A = 0xC0;
+		aCPU->ResetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreateINX_Y_Instruction(OPCode, 0xFF);
+		aCPU->A = 0x7F;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST3
+		aCPU = CreateINX_Y_Instruction(OPCode, 0x01);
+		aCPU->A = 0x80;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST4
+		aCPU = CreateINX_Y_Instruction(OPCode, 0x01);
+		aCPU->A = 0x00;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+	}
+	TEST_METHOD(SBC_PRII) {
+		uint8_t OPCode = 0xE1;
+		uint8_t InstructionLength = 0x02;
+		CPU* aCPU;
+
+		//test examples from http://www.6502.org/tutorials/vflag.html
+
+		//TEST1
+		aCPU = CreatePRII_Instruction(OPCode, 0x40);
+		aCPU->A = 0xC0;
+		aCPU->ResetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreatePRII_Instruction(OPCode, 0xFF);
+		aCPU->A = 0x7F;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST3
+		aCPU = CreatePRII_Instruction(OPCode, 0x01);
+		aCPU->A = 0x80;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST4
+		aCPU = CreatePRII_Instruction(OPCode, 0x01);
+		aCPU->A = 0x00;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+	}
+	TEST_METHOD(SBC_POII) {
+		uint8_t OPCode = 0xF1;
+		uint8_t InstructionLength = 0x02;
+		CPU* aCPU;
+
+		//test examples from http://www.6502.org/tutorials/vflag.html
+
+		//TEST1
+		aCPU = CreatePOII_Instruction(OPCode, 0x40);
+		aCPU->A = 0xC0;
+		aCPU->ResetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST2
+		aCPU = CreatePOII_Instruction(OPCode, 0xFF);
+		aCPU->A = 0x7F;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST3
+		aCPU = CreatePOII_Instruction(OPCode, 0x01);
+		aCPU->A = 0x80;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsTrue(aCPU->GetOverflow());
+		Assert::IsFalse(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+		//TEST4
+		aCPU = CreatePOII_Instruction(OPCode, 0x01);
+		aCPU->A = 0x00;
+		aCPU->SetCarry();
+		aCPU->ExecuteNextInstruction();
+		Assert::IsFalse(aCPU->GetOverflow());
+		Assert::IsTrue(aCPU->GetCarry());
+		Assert::AreEqual(0x0000 + InstructionLength, (int)aCPU->PC);
+		Assert::IsTrue(aCPU->FinishedExecutingCurrentInsctruction);
+
+	}
+};
 }

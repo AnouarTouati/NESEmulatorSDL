@@ -152,28 +152,186 @@
 		case 0xDD:  CMP_INX_X(); break;
 		case 0xDE:  DEC_INX_X(); break;
 		case 0xE0:  CPX_IME(); break;
-		//case 0xE1:  SBC_PRII(); break;
+		case 0xE1:  SBC_PRII(); break;
 		case 0xE4:  CPX_ZABS(); break;
-		//case 0xE5:  SBC_ZABS(); break;
+		case 0xE5:  SBC_ZABS(); break;
 		case 0xE6:  INC_ZABS(); break;
 		case 0xE8:  INX(); break;
-		//case 0xE9:  SBC_IME(); break;
+		case 0xE9:  SBC_IME(); break;
 		case 0xEA:  NOP(); break;
 		case 0xEC:  CPX_ABS(); break;
-		//case 0xED:  SBC_ABS(); break;
+		case 0xED:  SBC_ABS(); break;
 		case 0xEE:  INC_ABS(); break;
 		case 0xF0:  BEQ(); break;
-		//case 0xF1:  SBC_POII(); break;
-		//case 0xF5:  SBC_ZINX(); break;
+		case 0xF1:  SBC_POII(); break;
+		case 0xF5:  SBC_ZINX(); break;
 		case 0xF6:  INC_ZINX(); break;
 		case 0xF8:  SED(); break;
-		//case 0xF9:  SBC_INX_Y(); break;
-		//case 0xFD:  SBC_INX_X(); break;
+		case 0xF9:  SBC_INX_Y(); break;
+		case 0xFD:  SBC_INX_X(); break;
 		case 0xFE:  INC_INX_X(); break;
 		//default:LOG_WARN("OPCode not supported"); break;
 		}
 		
 	}
+
+
+
+	/////////   SBC_INSTRUCTIONS
+	
+	void CPU::BaseOverflowCheckOnSubtraction(uint8_t Value1, uint8_t Value2) {
+
+		if (GetSignFromData(&Value1) == GetSignFromData(&Value2)) {
+			//no overflow
+			ResetOverflow();
+		}
+		else {
+			//overflow is a possibility
+			uint8_t Diff = Value1 - Value2;
+
+			if (GetSignFromData(&Diff) != GetSignFromData(&Value1)) {//value 1 is not interchanble with value2
+				//overflow happened
+				SetOverflow();
+			}
+			else {
+				ResetOverflow();
+			}
+		}
+
+	}
+
+	void CPU::SBC_IME() {
+		// E9 2 bytes instruction
+		uint8_t NotCarry = 0;
+		BaseOverflowCheckOnSubtraction(A, *GetPointerToDataInCPUMemoryUsing_IME_MODE());
+		if (!GetCarry()) {
+			NotCarry = 1;
+			uint8_t ByteDiff = A - *GetPointerToDataInCPUMemoryUsing_IME_MODE();
+			BaseOverflowCheckOnSubtraction(ByteDiff, NotCarry);
+		}
+		uint16_t Diff = A - *GetPointerToDataInCPUMemoryUsing_IME_MODE() - NotCarry;
+
+		if (Diff & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = Diff;//truncated
+		BaseSZCheck(2, A);
+	}
+	
+	void CPU::SBC_ZABS() {
+		// E5 2 bytes instruction
+		uint8_t NotCarry = 0;
+		BaseOverflowCheckOnSubtraction(A, *GetPointerToDataInCPUMemoryUsing_ZABS_MODE());
+		if (!GetCarry()) {
+			NotCarry = 1;
+			uint8_t ByteDiff = A - *GetPointerToDataInCPUMemoryUsing_ZABS_MODE();
+			BaseOverflowCheckOnSubtraction(ByteDiff, NotCarry);
+		}
+		uint16_t Diff = A - *GetPointerToDataInCPUMemoryUsing_ZABS_MODE() - NotCarry;
+
+		if (Diff & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = Diff;//truncated
+		BaseSZCheck(2, A);
+	}
+	void CPU::SBC_ZINX() {
+		// F5 2 bytes instruction
+		uint8_t NotCarry = 0;
+		BaseOverflowCheckOnSubtraction(A, *GetPointerToDataInCPUMemoryUsing_ZINX_MODE());
+		if (!GetCarry()) {
+			NotCarry = 1;
+			uint8_t ByteDiff = A - *GetPointerToDataInCPUMemoryUsing_ZINX_MODE();
+			BaseOverflowCheckOnSubtraction(ByteDiff, NotCarry);
+		}
+		uint16_t Diff = A - *GetPointerToDataInCPUMemoryUsing_ZINX_MODE() - NotCarry;
+
+		if (Diff & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = Diff;//truncated
+		BaseSZCheck(2, A);
+	}
+	void CPU::SBC_ABS() {
+		// ED 3 bytes instruction
+		uint8_t NotCarry = 0;
+		BaseOverflowCheckOnSubtraction(A, *GetPointerToDataInCPUMemoryUsing_ABS_MODE());
+		if (!GetCarry()) {
+			NotCarry = 1;
+			uint8_t ByteDiff = A - *GetPointerToDataInCPUMemoryUsing_ABS_MODE();
+			BaseOverflowCheckOnSubtraction(ByteDiff, NotCarry);
+		}
+		uint16_t Diff = A - *GetPointerToDataInCPUMemoryUsing_ABS_MODE() - NotCarry;
+
+		if (Diff & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = Diff;//truncated
+		BaseSZCheck(3, A);
+	}
+	void CPU::SBC_INX_X() {
+		// FD 2 bytes instruction
+		uint8_t NotCarry = 0;
+		BaseOverflowCheckOnSubtraction(A, *GetPointerToDataInCPUMemoryUsing_INX_X_MODE());
+		if (!GetCarry()) {
+			NotCarry = 1;
+			uint8_t ByteDiff = A - *GetPointerToDataInCPUMemoryUsing_INX_X_MODE();
+			BaseOverflowCheckOnSubtraction(ByteDiff, NotCarry);
+		}
+		uint16_t Diff = A - *GetPointerToDataInCPUMemoryUsing_INX_X_MODE() - NotCarry;
+
+		if (Diff & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = Diff;//truncated
+		BaseSZCheck(3, A);
+	}
+	void CPU::SBC_INX_Y() {
+		// F9 3 bytes instruction
+		uint8_t NotCarry = 0;
+		BaseOverflowCheckOnSubtraction(A, *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE());
+		if (!GetCarry()) {
+			NotCarry = 1;
+			uint8_t ByteDiff = A - *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE();
+			BaseOverflowCheckOnSubtraction(ByteDiff, NotCarry);
+		}
+		uint16_t Diff = A - *GetPointerToDataInCPUMemoryUsing_INX_Y_MODE() - NotCarry;
+
+		if (Diff & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = Diff;//truncated
+		BaseSZCheck(3, A);
+	}
+	void CPU::SBC_PRII() {
+		// E1 2 bytes instruction
+		uint8_t NotCarry = 0;
+		BaseOverflowCheckOnSubtraction(A, *GetPointerToDataInCPUMemoryUsing_PRII_MODE());
+		if (!GetCarry()) {
+			NotCarry = 1;
+			uint8_t ByteDiff = A - *GetPointerToDataInCPUMemoryUsing_PRII_MODE();
+			BaseOverflowCheckOnSubtraction(ByteDiff, NotCarry);
+		}
+		uint16_t Diff = A - *GetPointerToDataInCPUMemoryUsing_PRII_MODE() - NotCarry;
+
+		if (Diff & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = Diff;//truncated
+		BaseSZCheck(2, A);
+	}
+	void CPU::SBC_POII() {
+		// F1 2 bytes instruction
+		uint8_t NotCarry = 0;
+		BaseOverflowCheckOnSubtraction(A, *GetPointerToDataInCPUMemoryUsing_POII_MODE());
+		if (!GetCarry()) {
+			NotCarry = 1;
+			uint8_t ByteDiff = A - *GetPointerToDataInCPUMemoryUsing_POII_MODE();
+			BaseOverflowCheckOnSubtraction(ByteDiff, NotCarry);
+		}
+		uint16_t Diff = A - *GetPointerToDataInCPUMemoryUsing_POII_MODE() - NotCarry;
+
+		if (Diff & 0x0100) { SetCarry(); }
+		else { ResetCarry(); }
+		A = Diff;//truncated
+		BaseSZCheck(2, A);
+	}
+	
+	////////////////  END    ///////////////
+
 
 
 
@@ -655,7 +813,7 @@
 		PC = PC + InstructionLength;
 		FinishedExecutingCurrentInsctruction = true;
 	}
-	
+	/////////   ADC_INSTRUCTIONS
 	void CPU::BaseOverflowCheckOnAddition(uint8_t Value1, uint8_t Value2) {
 	
 		if (GetSignFromData(&Value1) != GetSignFromData(&Value2)) {
@@ -686,12 +844,7 @@
 			BaseOverflowCheckOnAddition(ByteSum, Carry);
 		}
 		uint16_t sum = A + *GetPointerToDataInCPUMemoryUsing_IME_MODE() + Carry;
-		  /*if (!((A | *GetPointerToDataInCPUMemoryUsing_IME_MODE()) & 0x80) && ((A | sum) & 0x80)) {
-			  SetOverflow();
-		  }
-		  else {
-			  ResetOverflow();
-		  }*/
+		
 		  if (sum & 0x0100) { SetCarry(); }
 		  else { ResetCarry(); }
 		  A = sum;//truncated
@@ -808,6 +961,8 @@
 		A = sum;//truncated
 		BaseSZCheck(2, A);
 	}
+	////////////////  END    ///////////////
+
 	/////////   AND_INSTRUCTIONS
 	void CPU::AND_IME() {
 		//OPCOE 0x29 2BYTES LONG

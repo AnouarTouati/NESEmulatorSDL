@@ -209,6 +209,7 @@
 			P = P & 0b01111111;
 		}
 		
+		void BaseOverflowCheckOnSubtraction(uint8_t Value1, uint8_t Value2);
 		void BaseLSR(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered);
 		void BaseROR(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered);
 		void BaseROL(uint8_t InstructionLength, uint8_t* DataThaWillBeAltered);
@@ -224,19 +225,19 @@
 		
 
 		
-		 void BRK(); 
+		 void  BRK(); 
 		 void  ORA_PRII(); 
 		 void  ORA_ZABS(); 
-		 void   ASL_ZABS();
-		 void   PHP();
-		 void   ORA_IME();
+		 void  ASL_ZABS();
+		 void  PHP();
+		 void  ORA_IME();
 		 void  ASL_ACC();
 		 void  ORA_ABS();
 		 void  ASL_ABS();
 		 void  BPL();
 		 void  ORA_POII();
-		 void ORA_ZINX();
-		 void ASL_ZINX();
+		 void  ORA_ZINX();
+		 void  ASL_ZINX();
 		 void  CLC();
 		 void  ORA_INX_Y();
 		 void  ORA_INX_X();
@@ -283,7 +284,6 @@
 		 void  ADC_ZABS(); 
 		 void  ROR_ZABS(); 
 		 void  PLA(); 
-		
 		 void ADC_IME(); 
 		 void  ROR_ACC();
 		 void  JMP_IND(); 
@@ -358,22 +358,23 @@
 		 void  CMP_INX_X(); 
 		 void  DEC_INX_X(); 
 		 void  CPX_IME(); 
-		// void  SBC_PRII(); 
+	     void  SBC_PRII(); 
 		 void  CPX_ZABS(); 
-		// void  SBC_ZABS(); 
+		 void  SBC_ZABS(); 
 		 void  INC_ZABS(); 
 		 void  INX(); 
-		// void  SBC_IME(); 
+		 void  SBC_IME(); 
 		 void  NOP(); 
 		 void  CPX_ABS(); 
-		// void  SBC_ABS(); 
+		 void  SBC_ABS(); 
 		 void  INC_ABS(); 
 		 void  BEQ(); 
-		// void  SBC_POII(); 
-		// void  SBC_ZINX(); 
+	     void  SBC_POII(); 
+		 void  SBC_ZINX(); 
 		 void  INC_ZINX(); 
 		 void  SED(); 
-		// void  SBC_INX_Y(); 
-		// void  SBC_INX_X(); 
+		 void  SBC_INX_Y(); 
+		 void  SBC_INX_X(); 
 		 void  INC_INX_X(); 
 	};
+	
